@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>마비노기 NPC 상점 검색(v0.0.1 알파)</title>
+    <title>마비노기 NPC 상점 검색(v0.1.0 알파)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" type="text/css" href="https://unpkg.com/tabbyjs@12.0.3/dist/css/tabby-ui.min.css">
     <script src="https://unpkg.com/tabbyjs@12/dist/js/tabby.min.js"></script>
@@ -78,7 +78,7 @@
                 <label class="mr-2">검색할 값</label>
                 <input type="text" name="search" class="border rounded px-2 py-1 w-32" value="0,0,0">
             </div>
-            <button class="bg-blue-500 text-white px-4 py-2 rounded" onclick="searchShop()">확인하기</button>
+            <button class="bg-blue-500 text-white px-4 py-2 rounded" onclick="searchShop()" id="btnSearch">검색하기</button>
         </div>
         <ul data-tabs id="tabList">
           <!-- 탭 항목이 여기에 추가됩니다 -->
@@ -130,6 +130,9 @@
         function searchShop() {
             const apiUrl = `https://mabi-api.yumeka.xyz/npcshop/search?npc_name=${npcName}&server_name=${curServer}&mode=${mode}&part=${part}&search=${search}`;
 
+            document.getElementById("btnSearch").innerText = "검색중";
+            document.getElementById("btnSearch").disabled = true;
+
             fetch(apiUrl)
                 .then(response => response.json())
                 .then(data => {
@@ -138,6 +141,10 @@
                 })
                 .catch(error => {
                     console.error("Error fetching the API:", error);
+                })
+                .finally(() => {
+                    document.getElementById("btnSearch").innerText = "검색하기";
+                    document.getElementById("btnSearch").disabled = false;
                 });
         }
 
