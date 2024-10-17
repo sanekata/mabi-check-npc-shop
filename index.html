@@ -10,16 +10,18 @@
         body {
             font-family: 'Roboto', sans-serif;
         }
-        .active {
-            background-color: #3b82f6;
-            color: white;
+        button.selected {
+            --tw-text-opacity: 1;
+            color: rgb(255 255 255 / var(--tw-text-opacity)) !important;
+            --tw-bg-opacity: 1;
+            background-color: rgb(14 165 233 / var(--tw-bg-opacity)) !important;
         }
     </style>
 </head>
 <body class="bg-gray-100 p-6">
     <div class="max-w-4xl mx-auto bg-white shadow-md rounded-lg p-4">
         <div class="flex space-x-4 mb-4">
-            <button class="bg-sky-500 text-blue-500 px-4 py-2 rounded border border-blue-500" data-code="R">류트</button>
+            <button class="selected text-blue-500 px-4 py-2 rounded border border-blue-500" data-code="R">류트</button>
             <button class="text-blue-500 px-4 py-2 rounded border border-blue-500" data-code="M">만돌린</button>
             <button class="text-blue-500 px-4 py-2 rounded border border-blue-500" data-code="H">하프</button>
             <button class="text-blue-500 px-4 py-2 rounded border border-blue-500" data-code="W">울프</button>
@@ -85,8 +87,8 @@
         let curServer = "R";
         document.querySelectorAll('button').forEach(button => {
             button.addEventListener('click', () => {
-                document.querySelectorAll('button').forEach(btn => btn.classList.remove('bg-sky-500'));
-                button.classList.add('bg-sky-500');
+                document.querySelectorAll('button').forEach(btn => btn.classList.remove('selected'));
+                button.classList.add('selected');
             });
         });
         function checkShop() {
