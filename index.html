@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>마비노기 NPC 상점 현황 프로토타입</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/gh/cferdinandi/tabby/dist/js/tabby.polyfills.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/cferdinandi/tabby/dist/css/tabby-ui.min.css">
+    <link href="https://unpkg.com/tabbyjs@12/dist/js/tabby.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <style>
         body {
@@ -59,10 +62,14 @@
             </div>
             <button class="bg-blue-500 text-white px-4 py-2 rounded" onclick="checkShop()">확인하기</button>
         </div>
-        <div class="overflow-y-auto h-64 border-t border-b" id="itemList">
-            <!-- 상점 아이템 목록이 여기에 표시됩니다 -->
+        <ul data-tabs id="tabList">
+          <!-- 탭 항목이 여기에 추가됩니다 -->
+        </ul>
+        <div id="tabContents">
+          <!-- 탭 내용이 여기에 추가됩니다 -->
         </div>
     </div>
+    
     <script>
         let curServer = "R";
         let chNum = 1;
@@ -98,25 +105,38 @@
                 .then(response => response.json())
                 .then(data => {
                     console.log("API Response:", data);
-                    displayItems(data.shop);  // 탭별 아이템 목록 표시 함수 호출
+                    createTabs(data.shop);  // 탭 생성 및 아이템 목록 표시
                 })
                 .catch(error => {
                     console.error("Error fetching the API:", error);
                 });
         }
 
-        // 탭별로 아이템 목록을 표시하는 함수
-        function displayItems(shops) {
-            const itemList = document.getElementById("itemList");
-            itemList.innerHTML = "";  // 기존 목록 초기화
+        // 탭 및 아이템 목록을 동적으로 생성하는 함수
+        function createTabs(shops) {
+            const tabList = document.getElementById("tabList");
+            const tabContents = document.getElementById("tabContents");
 
-            shops.forEach(tab => {
-                // 각 탭 이름 추가
-                const tabTitle = document.createElement("h3");
-                tabTitle.classList.add("font-bold", "text-lg", "my-2");
-                tabTitle.textContent = tab.tab_name;
-                itemList.appendChild(tabTitle);
+            tabList.innerHTML = "";  // 기존 탭 초기화
+            tabContents.innerHTML = "";  // 기존 탭 콘텐츠 초기화
 
+            shops.forEach((tab, index) => {
+                // 탭 리스트 생성
+                const tabId = `tab_${index}`;
+                const tabItem = document.createElement("li");
+                const tabLink = document.createElement("a");
+                tabLink.href = `#${tabId}`;
+                tabLink.textContent = tab.tab_name;
+                if (index === 0) {
+                    tabLink.setAttribute("data-tabby-default", "");
+                }
+                tabItem.appendChild(tabLink);
+                tabList.appendChild(tabItem);
+
+                // 탭 콘텐츠 생성
+                const tabContent = document.createElement("div");
+                tabContent.id = tabId;
+                tabContent.classList.add("itemList", "overflow-y-auto", "h-64", "border-t", "border-b");
                 tab.item.forEach(item => {
                     const itemDiv = document.createElement("div");
                     itemDiv.classList.add("flex", "items-center", "p-4", "border-b");
@@ -138,7 +158,10 @@
                         item.item_option.forEach(option => {
                             const optionText = document.createElement("div");
                             optionText.classList.add("text-sm", "text-gray-500");
-                            optionText.textContent = `${option.option_type}: ${option.option_value}`;
+                            const optionDisplay = option.option_sub_type
+                                ? `${option.option_type} [${option.option_sub_type}]: ${option.option_value}`
+                                : `${option.option_type}: ${option.option_value}`;
+                            optionText.textContent = optionDisplay;
                             itemDetails.appendChild(optionText);
                         });
                     }
@@ -146,9 +169,14 @@
                     itemDiv.appendChild(itemImage);
                     itemDiv.appendChild(itemDetails);
 
-                    itemList.appendChild(itemDiv);
+                    tabContent.appendChild(itemDiv);
                 });
+
+                tabContents.appendChild(tabContent);
             });
+
+            // 탭 갱신
+            const tabs = new Tabby('[data-tabs]');
         }
     </script>
 </body>
