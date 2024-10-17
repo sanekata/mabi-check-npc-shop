@@ -1,0 +1,1 @@
+# mabi-check-npc-shop
