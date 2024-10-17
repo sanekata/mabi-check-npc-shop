@@ -169,13 +169,13 @@
                                 const optionDisplay = option.option_sub_type
                                     ? `${option.option_type} [${option.option_sub_type}]: <span style="color: rgb(${option.option_value})">■</span> ${option.option_value}`
                                     : `${option.option_type}: <span style="color: rgb(${option.option_value})">■</span> ${option.option_value}`;
-                                optionText.textContent = optionDisplay;
+                                optionText.innerHTML = optionDisplay;
                                 itemDetails.appendChild(optionText);
                             } else {
                                 const optionDisplay = option.option_sub_type
                                     ? `${option.option_type} [${option.option_sub_type}]: ${option.option_value}`
                                     : `${option.option_type}: ${option.option_value}`;
-                                optionText.textContent = optionDisplay;
+                                optionText.innerHTML = optionDisplay;
                                 itemDetails.appendChild(optionText);
                             }
                         });
