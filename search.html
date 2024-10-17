@@ -128,7 +128,7 @@
 
         // API 요청 보내기
         function searchShop() {
-            const apiUrl = `https://mabi-api.yumeka.xyz/npcshop/search?npc_name=${npcName}&server_name=${curServer}&channel=${chNum}&mode=${mode}&part=${part}&search=${search}`;
+            const apiUrl = `https://mabi-api.yumeka.xyz/npcshop/search?npc_name=${npcName}&server_name=${curServer}&mode=${mode}&part=${part}&search=${search}`;
 
             fetch(apiUrl)
                 .then(response => response.json())
