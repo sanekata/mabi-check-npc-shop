@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>마비노기 NPC 상점 현황(v0.0.1 알파)</title>
+    <title>마비노기 NPC 상점 검색(v0.0.1 알파)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" type="text/css" href="https://unpkg.com/tabbyjs@12.0.3/dist/css/tabby-ui.min.css">
     <script src="https://unpkg.com/tabbyjs@12/dist/js/tabby.min.js"></script>
@@ -34,37 +34,51 @@
             <button class="channelBtn text-blue-500 px-4 py-2 rounded border border-blue-500" data-code="울프">울프</button>
         </div>
         <div class="flex items-center mb-4">
-            <label class="mr-2">채널 선택</label>
-            <input type="number" name="chNum" min="1" max="99" class="border rounded px-2 py-1 w-16" value="1">
+            <label class="mr-2">NPC 선택</label>
+            <select class="border rounded px-2 py-1" name="npcName">
+                <option value="델">델</option>
+                <option value="델렌">델렌</option>
+                <option value="상인 라누">상인 라누</option>
+                <option value="상인 피루">상인 피루</option>
+                <option value="모락">모락</option>
+                <option value="상인 아루">상인 아루</option>
+                <option value="리나">리나</option>
+                <option value="상인 누누">상인 누누</option>
+                <option value="상인 메루">상인 메루</option>
+                <option value="켄">켄</option>
+                <option value="귀넥">귀넥</option>
+                <option value="얼리">얼리</option>
+                <option value="데위">데위</option>
+                <option value="테일로">테일로</option>
+                <option value="상인 세누">상인 세누</option>
+                <option value="상인 베루">상인 베루</option>
+                <option value="상인 에루">상인 에루</option>
+                <option value="상인 네루">상인 네루</option>
+                <option value="카디">카디</option>
+                <option value="인장 상인">인장 상인</option>
+                <option value="피오나트">피오나트</option>
+            </select>
+        </div>
+        <div class="flex items-center mb-4">
+            <label class="mr-2">모드 선택</label>
+            <select class="border rounded px-2 py-1" name="mode">
+                <option value="color">색상</option>
+            </select>
+        </div>
+        <div class="flex items-center mb-4">
+            <label class="mr-2">파트 선택</label>
+            <select class="border rounded px-2 py-1" name="part">
+                <option value="a">파트 A</option>
+                <option value="b">파트 A</option>
+                <option value="c">파트 A</option>
+            </select>
         </div>
         <div class="flex items-center justify-between mb-4">
             <div class="flex items-center">
-                <label class="mr-2">NPC 선택</label>
-                <select class="border rounded px-2 py-1" name="npcName">
-                    <option value="델">델</option>
-                    <option value="델렌">델렌</option>
-                    <option value="상인 라누">상인 라누</option>
-                    <option value="상인 피루">상인 피루</option>
-                    <option value="모락">모락</option>
-                    <option value="상인 아루">상인 아루</option>
-                    <option value="리나">리나</option>
-                    <option value="상인 누누">상인 누누</option>
-                    <option value="상인 메루">상인 메루</option>
-                    <option value="켄">켄</option>
-                    <option value="귀넥">귀넥</option>
-                    <option value="얼리">얼리</option>
-                    <option value="데위">데위</option>
-                    <option value="테일로">테일로</option>
-                    <option value="상인 세누">상인 세누</option>
-                    <option value="상인 베루">상인 베루</option>
-                    <option value="상인 에루">상인 에루</option>
-                    <option value="상인 네루">상인 네루</option>
-                    <option value="카디">카디</option>
-                    <option value="인장 상인">인장 상인</option>
-                    <option value="피오나트">피오나트</option>
-                </select>
+                <label class="mr-2">검색할 값</label>
+                <input type="text" name="search" class="border rounded px-2 py-1 w-16" value="0,0,0">
             </div>
-            <button class="bg-blue-500 text-white px-4 py-2 rounded" onclick="checkShop()">확인하기</button>
+            <button class="bg-blue-500 text-white px-4 py-2 rounded" onclick="searchShop()">확인하기</button>
         </div>
         <ul data-tabs id="tabList">
           <!-- 탭 항목이 여기에 추가됩니다 -->
@@ -76,8 +90,10 @@
     
     <script>
         let curServer = "류트";
-        let chNum = 1;
+        let mode = "color";
+        let part = "a";
         let npcName = "델";
+        let search = "0,0,0";
 
         // 서버 선택
         document.querySelectorAll('button.channelBtn').forEach(button => {
@@ -89,21 +105,30 @@
             });
         });
 
-        // 채널 번호 변경 시
-        document.querySelector('input[name="chNum"]').addEventListener('input', (event) => {
-            chNum = Number(event.target.value);
-            console.log("Channel Number:", chNum);
-        });
-
         // NPC 선택 변경 시
         document.querySelector('select[name="npcName"]').addEventListener('change', (event) => {
             npcName = event.target.value;
             console.log("NPC Name:", npcName);
         });
 
+        document.querySelector('select[name="mode"]').addEventListener('change', (event) => {
+            mode = event.target.value;
+            console.log("Search Mode:", npcName);
+        });
+
+        document.querySelector('select[name="part"]').addEventListener('change', (event) => {
+            part = event.target.value;
+            console.log("Search Part:", npcName);
+        });
+
+        document.querySelector('input[name="search"]').addEventListener('input', (event) => {
+            search = event.target.value;
+            console.log("Search Value:", search);
+        });
+
         // API 요청 보내기
-        function checkShop() {
-            const apiUrl = `https://mabi-api.yumeka.xyz/npcshop/status?npc_name=${npcName}&server_name=${curServer}&channel=${chNum}`;
+        function searchShop() {
+            const apiUrl = `https://mabi-api.yumeka.xyz/npcshop/search?npc_name=${npcName}&server_name=${curServer}&channel=${chNum}&mode=${mode}&part=${part}&search=${search}`;
 
             fetch(apiUrl)
                 .then(response => response.json())
