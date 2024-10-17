@@ -19,19 +19,19 @@
 <body class="bg-gray-100 p-6">
     <div class="max-w-4xl mx-auto bg-white shadow-md rounded-lg p-4">
         <div class="flex space-x-4 mb-4">
-            <button class="bg-white text-blue-500 px-4 py-2 rounded border border-blue-500">류트</button>
-            <button class="bg-white text-blue-500 px-4 py-2 rounded border border-blue-500">만돌린</button>
-            <button class="bg-white text-blue-500 px-4 py-2 rounded border border-blue-500">하프</button>
-            <button class="bg-white text-blue-500 px-4 py-2 rounded border border-blue-500">울프</button>
+            <button class="bg-white text-blue-500 px-4 py-2 rounded border border-blue-500" data-code="R">류트</button>
+            <button class="bg-white text-blue-500 px-4 py-2 rounded border border-blue-500" data-code="M">만돌린</button>
+            <button class="bg-white text-blue-500 px-4 py-2 rounded border border-blue-500" data-code="H">하프</button>
+            <button class="bg-white text-blue-500 px-4 py-2 rounded border border-blue-500" data-code="W">울프</button>
         </div>
         <div class="flex items-center mb-4">
             <label class="mr-2">채널 선택</label>
-            <input type="number" min="1" max="99" class="border rounded px-2 py-1 w-16">
+            <input type="number" name="chNum" min="1" max="99" class="border rounded px-2 py-1 w-16">
         </div>
         <div class="flex items-center justify-between mb-4">
             <div class="flex items-center">
                 <label class="mr-2">NPC 선택</label>
-                <select class="border rounded px-2 py-1">
+                <select class="border rounded px-2 py-1" name="npcName">
                     <option>델</option>
                     <option>델렌</option>
                     <option>상인 라누</option>
@@ -55,7 +55,7 @@
                     <option>피오나트</option>
                 </select>
             </div>
-            <button class="bg-blue-500 text-white px-4 py-2 rounded">확인하기</button>
+            <button class="bg-blue-500 text-white px-4 py-2 rounded" onclick="checkShop()">확인하기</button>
         </div>
         <div class="overflow-y-auto h-64 border-t border-b">
             <div class="flex items-center p-4 border-b">
@@ -88,6 +88,9 @@
                 button.classList.add('active');
             });
         });
+        function checkShop() {
+            // TODO Implement This
+        }
     </script>
 </body>
 </html>
