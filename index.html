@@ -84,8 +84,8 @@
     <script type="module">
         document.querySelectorAll('button').forEach(button => {
             button.addEventListener('click', () => {
-                document.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
+                document.querySelectorAll('button').forEach(btn => btn.classList.remove('bg-white'));
+                button.classList.add('bg-blue');
             });
         });
         function checkShop() {
