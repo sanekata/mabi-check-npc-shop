@@ -21,10 +21,10 @@
 <body class="bg-gray-100 p-6">
     <div class="max-w-4xl mx-auto bg-white shadow-md rounded-lg p-4">
         <div class="flex space-x-4 mb-4">
-            <button class="selected text-blue-500 px-4 py-2 rounded border border-blue-500" data-code="R">류트</button>
-            <button class="text-blue-500 px-4 py-2 rounded border border-blue-500" data-code="M">만돌린</button>
-            <button class="text-blue-500 px-4 py-2 rounded border border-blue-500" data-code="H">하프</button>
-            <button class="text-blue-500 px-4 py-2 rounded border border-blue-500" data-code="W">울프</button>
+            <button class="channelBtn selected text-blue-500 px-4 py-2 rounded border border-blue-500" data-code="R">류트</button>
+            <button class="channelBtn text-blue-500 px-4 py-2 rounded border border-blue-500" data-code="M">만돌린</button>
+            <button class="channelBtn text-blue-500 px-4 py-2 rounded border border-blue-500" data-code="H">하프</button>
+            <button class="channelBtntext-blue-500 px-4 py-2 rounded border border-blue-500" data-code="W">울프</button>
         </div>
         <div class="flex items-center mb-4">
             <label class="mr-2">채널 선택</label>
@@ -85,9 +85,9 @@
     </div>
     <script type="module">
         let curServer = "R";
-        document.querySelectorAll('button').forEach(button => {
+        document.querySelectorAll('button.channelBtn').forEach(button => {
             button.addEventListener('click', () => {
-                document.querySelectorAll('button').forEach(btn => btn.classList.remove('selected'));
+                document.querySelectorAll('button.channelBtn').forEach(btn => btn.classList.remove('selected'));
                 button.classList.add('selected');
             });
         });
