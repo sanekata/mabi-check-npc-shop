@@ -85,6 +85,24 @@
                 document.querySelectorAll('button.channelBtn').forEach(btn => btn.classList.remove('selected'));
                 button.classList.add('selected');
                 curServer = button.getAttribute('data-code');
+                let maxChannel;
+                switch (server) {
+                    case "류트":
+                        maxChannel = 44;
+                        break;
+                    case "만돌린":
+                        maxChannel = 16;
+                        break;
+                    case "하프":
+                        maxChannel = 25;
+                        break;
+                    case "울프":
+                        maxChannel = 16;
+                        break;
+                    default:
+                        maxChannel = 99;
+                }
+                document.querySelector('input[name="chNum"]').max = maxChannel;
                 console.log("Current Server:", curServer);
             });
         });
