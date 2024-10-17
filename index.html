@@ -34,27 +34,27 @@
             <div class="flex items-center">
                 <label class="mr-2">NPC 선택</label>
                 <select class="border rounded px-2 py-1" name="npcName">
-                    <option>델</option>
-                    <option>델렌</option>
-                    <option>상인 라누</option>
-                    <option>상인 피루</option>
-                    <option>모락</option>
-                    <option>상인 아루</option>
-                    <option>리나</option>
-                    <option>상인 누누</option>
-                    <option>상인 메루</option>
-                    <option>켄</option>
-                    <option>귀넥</option>
-                    <option>얼리</option>
-                    <option>데위</option>
-                    <option>테일로</option>
-                    <option>상인 세누</option>
-                    <option>상인 베루</option>
-                    <option>상인 에루</option>
-                    <option>상인 네루</option>
-                    <option>카디</option>
-                    <option>인장 상인</option>
-                    <option>피오나트</option>
+                    <option value="델">델</option>
+                    <option value="델렌">델렌</option>
+                    <option value="상인 라누">상인 라누</option>
+                    <option value="상인 피루">상인 피루</option>
+                    <option value="모락">모락</option>
+                    <option value="상인 아루">상인 아루</option>
+                    <option value="리나">리나</option>
+                    <option value="상인 누누">상인 누누</option>
+                    <option value="상인 메루">상인 메루</option>
+                    <option value="켄">켄</option>
+                    <option value="귀넥">귀넥</option>
+                    <option value="얼리">얼리</option>
+                    <option value="데위">데위</option>
+                    <option value="테일로">테일로</option>
+                    <option value="상인 세누">상인 세누</option>
+                    <option value="상인 베루">상인 베루</option>
+                    <option value="상인 에루">상인 에루</option>
+                    <option value="상인 네루">상인 네루</option>
+                    <option value="카디">카디</option>
+                    <option value="인장 상인">인장 상인</option>
+                    <option value="피오나트">피오나트</option>
                 </select>
             </div>
             <button class="bg-blue-500 text-white px-4 py-2 rounded" onclick="checkShop()">확인하기</button>
@@ -85,14 +85,34 @@
     </div>
     <script type="module">
         let curServer = "R";
+        let chNum = 1;
+        let npcName = "델";
+
+        // 서버 선택
         document.querySelectorAll('button.channelBtn').forEach(button => {
             button.addEventListener('click', () => {
                 document.querySelectorAll('button.channelBtn').forEach(btn => btn.classList.remove('selected'));
                 button.classList.add('selected');
+                curServer = button.getAttribute('data-code');
+                console.log("Current Server:", curServer);
             });
         });
+
+        // 채널 번호 변경 시
+        document.querySelector('input[name="chNum"]').addEventListener('input', (event) => {
+            chNum = event.target.value;
+            console.log("Channel Number:", chNum);
+        });
+
+        // NPC 선택 변경 시
+        document.querySelector('select[name="npcName"]').addEventListener('change', (event) => {
+            npcName = event.target.value;
+            console.log("NPC Name:", npcName);
+        });
+
         function checkShop() {
-            // TODO Implement This
+            console.log(`서버: ${curServer}, 채널: ${chNum}, NPC: ${npcName}`);
+            // TODO: 상점 정보를 확인하는 기능 구현
         }
     </script>
 </body>
