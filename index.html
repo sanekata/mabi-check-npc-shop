@@ -165,11 +165,19 @@
                         item.item_option.forEach(option => {
                             const optionText = document.createElement("div");
                             optionText.classList.add("text-sm", "text-gray-500");
-                            const optionDisplay = option.option_sub_type
-                                ? `${option.option_type} [${option.option_sub_type}]: ${option.option_value}`
-                                : `${option.option_type}: ${option.option_value}`;
-                            optionText.textContent = optionDisplay;
-                            itemDetails.appendChild(optionText);
+                            if(option.option_type == "아이템 색상") {
+                                const optionDisplay = option.option_sub_type
+                                    ? `${option.option_type} [${option.option_sub_type}]: <span style="color: rgb(${option.option_value})">■</span> ${option.option_value}`
+                                    : `${option.option_type}: <span style="color: rgb(${option.option_value})">■</span> ${option.option_value}`;
+                                optionText.textContent = optionDisplay;
+                                itemDetails.appendChild(optionText);
+                            } else {
+                                const optionDisplay = option.option_sub_type
+                                    ? `${option.option_type} [${option.option_sub_type}]: ${option.option_value}`
+                                    : `${option.option_type}: ${option.option_value}`;
+                                optionText.textContent = optionDisplay;
+                                itemDetails.appendChild(optionText);
+                            }
                         });
                     }
 
