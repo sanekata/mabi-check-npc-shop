@@ -5,25 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>마비노기 NPC 상점 현황 프로토타입</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/gh/cferdinandi/tabby/dist/js/tabby.polyfills.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/cferdinandi/tabby/dist/css/tabby-ui.min.css">
-    <link href="https://unpkg.com/tabbyjs@12/dist/js/tabby.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/tabbyjs@12.0.3/dist/css/tabby-ui.min.css">
+    <script src="https://unpkg.com/tabbyjs@12/dist/js/tabby.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        @font-face {
-            font-family: 'MabinogiClassicR';
-            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2207-01@1.0/MabinogiClassicR.woff2') format('woff2');
-            font-weight: normal;
-            font-style: normal;
-        }
         body {
-            font-family: 'MabinogiClassicR', sans-serif;
+            font-family: 'Roboto', sans-serif;
         }
         button.selected {
             --tw-text-opacity: 1;
             color: rgb(255 255 255 / var(--tw-text-opacity)) !important;
             --tw-bg-opacity: 1;
             background-color: rgb(59 130 246 / var(--tw-bg-opacity)) !important;
+        }
+        img {
+            object-fit: contain;
+            width: auto;
+            height: 100%;
         }
     </style>
 </head>
@@ -77,7 +75,7 @@
     </div>
     
     <script>
-        let curServer = "R";
+        let curServer = "류트";
         let chNum = 1;
         let npcName = "델";
 
@@ -147,10 +145,13 @@
                     const itemDiv = document.createElement("div");
                     itemDiv.classList.add("flex", "items-center", "p-4", "border-b");
 
+                    const itemImageWrapper = document.createElement("div");
+                    itemImageWrapper.classList.add("w-16", "h-16", "mr-4");
+                    
                     const itemImage = document.createElement("img");
                     itemImage.src = item.image_url;
                     itemImage.alt = item.item_display_name;
-                    itemImage.classList.add("w-16", "h-16", "rounded", "mr-4");
+                    itemImageWrapper.appendChild(itemImage);
 
                     const itemDetails = document.createElement("div");
                     itemDetails.classList.add("flex-1");
@@ -172,7 +173,7 @@
                         });
                     }
 
-                    itemDiv.appendChild(itemImage);
+                    itemDiv.appendChild(itemImageWrapper);
                     itemDiv.appendChild(itemDetails);
 
                     tabContent.appendChild(itemDiv);
