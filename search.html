@@ -181,7 +181,7 @@
                     const itemDetails = document.createElement("div");
                     itemDetails.classList.add("flex-1");
                     itemDetails.innerHTML = `
-                        <div class="font-medium">${item.item_display_name}</div>
+                        <div class="font-medium">[채널 ${item.channel}] ${item.item_display_name}</div>
                         <div class="text-gray-600">가격: ${item.price[0].price_value} ${item.price[0].price_type}</div>
                     `;
 
