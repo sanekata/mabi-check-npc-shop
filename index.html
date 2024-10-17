@@ -59,31 +59,11 @@
             </div>
             <button class="bg-blue-500 text-white px-4 py-2 rounded" onclick="checkShop()">확인하기</button>
         </div>
-        <div class="overflow-y-auto h-64 border-t border-b">
-            <div class="flex items-center p-4 border-b">
-                <div class="w-16 h-16 bg-gray-200 rounded mr-4"></div>
-                <div class="flex-1">
-                    <div class="font-medium">아이템명</div>
-                    <div class="text-gray-600">아이템 특징</div>
-                </div>
-                <div class="text-right">
-                    <div class="font-medium">가격</div>
-                </div>
-            </div>
-            <div class="flex items-center p-4 border-b">
-                <div class="w-16 h-16 bg-gray-200 rounded mr-4"></div>
-                <div class="flex-1">
-                    <div class="font-medium">아이템명</div>
-                    <div class="text-gray-600">아이템 특징</div>
-                </div>
-                <div class="text-right">
-                    <div class="font-medium">가격</div>
-                </div>
-            </div>
-            <!-- Repeat item block as needed -->
+        <div class="overflow-y-auto h-64 border-t border-b" id="itemList">
+            <!-- 상점 아이템 목록이 여기에 표시됩니다 -->
         </div>
     </div>
-    <script type="module">
+    <script>
         let curServer = "R";
         let chNum = 1;
         let npcName = "델";
@@ -100,7 +80,7 @@
 
         // 채널 번호 변경 시
         document.querySelector('input[name="chNum"]').addEventListener('input', (event) => {
-            chNum = event.target.value;
+            chNum = Number(event.target.value);
             console.log("Channel Number:", chNum);
         });
 
@@ -110,9 +90,65 @@
             console.log("NPC Name:", npcName);
         });
 
+        // API 요청 보내기
         function checkShop() {
-            console.log(`서버: ${curServer}, 채널: ${chNum}, NPC: ${npcName}`);
-            // TODO: 상점 정보를 확인하는 기능 구현
+            const apiUrl = `https://mabi-api.yumeka.xyz/npcshop/status?npc_name=${npcName}&server_name=${curServer}&channel=${chNum}`;
+
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    console.log("API Response:", data);
+                    displayItems(data.shop);  // 탭별 아이템 목록 표시 함수 호출
+                })
+                .catch(error => {
+                    console.error("Error fetching the API:", error);
+                });
+        }
+
+        // 탭별로 아이템 목록을 표시하는 함수
+        function displayItems(shops) {
+            const itemList = document.getElementById("itemList");
+            itemList.innerHTML = "";  // 기존 목록 초기화
+
+            shops.forEach(tab => {
+                // 각 탭 이름 추가
+                const tabTitle = document.createElement("h3");
+                tabTitle.classList.add("font-bold", "text-lg", "my-2");
+                tabTitle.textContent = tab.tab_name;
+                itemList.appendChild(tabTitle);
+
+                tab.item.forEach(item => {
+                    const itemDiv = document.createElement("div");
+                    itemDiv.classList.add("flex", "items-center", "p-4", "border-b");
+
+                    const itemImage = document.createElement("img");
+                    itemImage.src = item.image_url;
+                    itemImage.alt = item.item_display_name;
+                    itemImage.classList.add("w-16", "h-16", "rounded", "mr-4");
+
+                    const itemDetails = document.createElement("div");
+                    itemDetails.classList.add("flex-1");
+                    itemDetails.innerHTML = `
+                        <div class="font-medium">${item.item_display_name}</div>
+                        <div class="text-gray-600">가격: ${item.price[0].price_value} ${item.price[0].price_type}</div>
+                    `;
+
+                    const itemOptions = document.createElement("div");
+                    if (item.item_option.length > 0) {
+                        item.item_option.forEach(option => {
+                            const optionText = document.createElement("div");
+                            optionText.classList.add("text-sm", "text-gray-500");
+                            optionText.textContent = `${option.option_type}: ${option.option_value}`;
+                            itemDetails.appendChild(optionText);
+                        });
+                    }
+
+                    itemDiv.appendChild(itemImage);
+                    itemDiv.appendChild(itemDetails);
+
+                    itemList.appendChild(itemDiv);
+                });
+            });
         }
     </script>
 </body>
