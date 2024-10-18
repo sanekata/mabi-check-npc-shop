@@ -43,7 +43,8 @@
         <div class="flex opt bag items-center mb-4">
             <label class="mr-2">지역 선택</label>
             <select class="border rounded px-2 py-1" name="mapName">
-                <option value="상인 네루">티르 코네일</option>
+                <option value="all">(모두 검색)</option>
+                <option value="상인 네루" selected>티르 코네일</option>
                 <option value="상인 누누">던바튼</option>
                 <option value="상인 라누">반호르</option>
                 <option value="상인 메루">이멘 마하</option>
@@ -59,7 +60,7 @@
                 <option value="귀넥">카루 숲</option>
                 <option value="데위">페라</option>
                 <option value="모락">자르딘</option>
-            </select>            
+            </select>
         </div>
         <div class="flex opt bag items-center mb-4">
             <label class="mr-2">주머니 선택</label>
@@ -147,6 +148,80 @@
         let mapName = "상인 네루";
         let search = "";
         let bag = "all";
+        let searchResult = [];
+
+        const npcInfoList = [
+            {
+                location: "티르 코네일",
+                name: "상인 네루"
+            },
+            {
+                location: "던바튼",
+                name: "상인 누누"
+            },
+            {
+                location: "반호르",
+                name: "상인 라누"
+            },
+            {
+                location: "이멘 마하",
+                name: "상인 메루"
+            },
+            {
+                location: "탈틴",
+                name: "상인 베루"
+            },
+            {
+                location: "타라",
+                name: "상인 에루"
+            },
+            {
+                location: "카브 항구",
+                name: "상인 아루"
+            },
+            {
+                location: "벨바스트(스카하 정찰 캠프)",
+                name: "상인 세누"
+            },
+            {
+                location: "켈라 베이스 캠프",
+                name: "테일로"
+            },
+            {
+                location: "코르",
+                name: "리나"
+            },
+            {
+                location: "필리아",
+                name: "켄"
+            },
+            {
+                location: "발레스",
+                name: "카디"
+            },
+            {
+                location: "오아시스",
+                name: "얼리"
+            },
+            {
+                location: "카루 숲",
+                name: "귀넥"
+            },
+            {
+                location: "페라",
+                name: "데위"
+            },
+            {
+                location: "자르딘",
+                name: "모락"
+            }
+        ];
+
+        // name 기준으로 location을 찾는 함수
+        function findLocationByName(name) {
+            const npc = npcInfoList.find(npc => npc.name === name);
+            return npc ? npc.location : false;
+        }
 
         document.querySelectorAll('div.opt').forEach(div => {
             div.style.display = "none";
@@ -225,10 +300,9 @@
             return result ? `${parseInt(result[1], 16)},${parseInt(result[2], 16)},${parseInt(result[3], 16)}` : '';
         }
 
-        // API 요청 보내기
-        async function searchShop() {
-            let itemDb = []; // 각 채널의 결과를 저장할 객체
-            const apiUrl = `https://mabi-api.yumeka.xyz/npcshop/status?npc_name=${mode == 'color' ? npcName : mapName}&server_name=${curServer}&channel=`;
+        function fetchAllChannel(search_npc_name, curServer) {
+            const fetchPromises = [];
+            const apiUrl = `https://mabi-api.yumeka.xyz/npcshop/status?npc_name=${search_npc_name}&server_name=${curServer}&channel=`;
 
             document.getElementById("btnSearch").innerText = "검색중";
             document.getElementById("btnSearch").disabled = true;
@@ -251,8 +325,6 @@
                     return;
             }
 
-            const fetchPromises = [];
-
             // 각 채널에 대한 API 요청을 준비
             for (let channel = 1; channel <= maxChannel; channel++) {
                 const channelUrl = `${apiUrl}${channel}`; // 각 채널에 맞는 URL 생성
@@ -269,6 +341,40 @@
 
                 fetchPromises.push(fetchPromise); // 모든 요청을 배열에 저장
             }
+
+            return fetchPromises;
+        }
+
+        async function searchShop() {
+            let search_npc_name = (mode == 'color' ? npcName : mapName);
+            searchResult = [];
+
+            if(search_npc_name == 'all') {
+                if(bag == 'all' && !search) {
+                    alert('모든 NPC 대상으로 검색시 가방 이름이나 색상 코드 중 하나는 지정해야 합니다.');
+                    return;
+                }
+                const allMap = document.querySelectorAll('select[name="mapName"] option');
+                for (let option of allMap) {
+                    if (option.value !== 'all') {
+                        await searchShopSingle(option.value);
+                    }
+                }
+            } else {
+                await searchShopSingle(search_npc_name);
+            }
+
+            createTabs(searchResult);
+
+            document.getElementById("btnSearch").innerText = "검색하기";
+            document.getElementById("btnSearch").disabled = false;
+        }
+
+        // API 요청 보내기
+        async function searchShopSingle(search_npc_name) {
+            let itemDb = []; // 각 채널의 결과를 저장할 객체
+
+            const fetchPromises = fetchAllChannel(search_npc_name, curServer);
 
             // 모든 채널의 API 요청이 완료될 때까지 대기
             await Promise.all(fetchPromises);
@@ -338,15 +444,10 @@
                 }
             }
 
-            const result = [{
+            searchResult.push({
                 tab_name: "검색 결과",
                 item: matchList
-            }];
-
-            createTabs(result);
-
-            document.getElementById("btnSearch").innerText = "검색하기";
-            document.getElementById("btnSearch").disabled = false;
+            });
         }
 
         // 탭 및 아이템 목록을 동적으로 생성하는 함수
