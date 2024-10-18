@@ -147,6 +147,13 @@
         let search = "0,0,0";
         let bag = "";
 
+        document.querySelectorAll('div.opt').forEach(div => {
+            div.style.display = "none";
+        });
+        document.querySelectorAll(`div.${mode}`).forEach(div => {
+            div.style.display = "flex";
+        });
+
         // 서버 선택
         document.querySelectorAll('button.channelBtn').forEach(button => {
             button.addEventListener('click', () => {
