@@ -33,7 +33,7 @@
 <body class="bg-gray-100 p-6 h-dvh">
     <div class="max-w-4xl mx-auto bg-white shadow-md rounded-lg p-4">
         <div class="flex items-center justify-between mb-4">
-            <div class="flex space-x-4 mb-4">
+            <div class="flex space-x-2 mb-4">
                 <button class="channelBtn selected text-blue-500 px-4 py-2 rounded border border-blue-500" data-code="류트">류트</button>
                 <button class="channelBtn text-blue-500 px-4 py-2 rounded border border-blue-500" data-code="만돌린">만돌린</button>
                 <button class="channelBtn text-blue-500 px-4 py-2 rounded border border-blue-500" data-code="하프">하프</button>
@@ -133,11 +133,14 @@
                 <option value="c">파트 C</option>
             </select>
         </div>
+        <div class="flex items-center mt-4" id="search3">
+            <label class="mr-2">색상 미지정시 모든 색상의 주머니를 보여줍니다.</label>
+        </div>
         <div class="flex items-center justify-between mb-4">
             <div class="flex items-center">
                 <label class="mr-2" id="search">겉감 색상</label>
                 <input type="color" name="picker" class="border rounded w-6 mr-2" value="">
-                <input type="text" name="search" class="border rounded px-2 py-1 w-32" value="" placeholder="비어있으면 무시함">
+                <input type="text" name="search" class="border rounded px-2 py-1 w-32" value="">
                 <button class="bg-white text-blue-500 px-2 py-1 rounded ml-2" id="btnReset">초기화</button>
             </div>
         </div>
@@ -145,7 +148,7 @@
             <div class="flex items-center">
                 <label class="mr-2">안감 색상</label>
                 <input type="color" name="picker2" class="border rounded w-6 mr-2" value="">
-                <input type="text" name="search2" class="border rounded px-2 py-1 w-32" value="" placeholder="비어있으면 무시함">
+                <input type="text" name="search2" class="border rounded px-2 py-1 w-32" value="">
                 <button class="bg-white text-blue-500 px-2 py-1 rounded ml-2" id="btnReset2">초기화</button>
             </div>
             <button class="bg-blue-500 text-white px-4 py-2 rounded" onclick="searchShop()" id="btnSearch">검색하기</button>
@@ -309,9 +312,11 @@
             if(mode == 'color') {
                 document.querySelector('#search').innerText = "찾을 색상";
                 document.querySelector('#search2').style.display = "none";
+                document.querySelector('#search3').style.display = "none";
             } else if(mode == 'bag') {
                 document.querySelector('#search').innerText = "겉감 색상";
                 document.querySelector('#search2').style.display = "flex";
+                document.querySelector('#search3').style.display = "flex";
             }
             console.log("Search Mode:", npcName);
         });
