@@ -275,6 +275,8 @@
             if (mode === "color") {
                 // color mode일 경우 part와 search를 기준으로 필터링
                 let channel = 1;
+                console.log(itemDb);
+                console.log(JSON.stringify(itemDb));
                 for (const shopData of itemDb) {
                     const shopTabs = shopData.shop;
 
