@@ -141,6 +141,11 @@
                 });
         }
 
+        function hexToRgb(hex) {
+            var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? `${parseInt(result[1], 16)},${parseInt(result[2], 16)},${parseInt(result[3], 16)}` : '';
+        }
+
         // 탭 및 아이템 목록을 동적으로 생성하는 함수
         function createTabs(shops) {
             const tabList = document.getElementById("tabList");
@@ -167,6 +172,19 @@
                 tabContent.id = tabId;
                 tabContent.classList.add("itemList", "overflow-y-auto", "h-64", "border-t", "border-b");
                 tab.item.forEach(item => {
+                    if(tab.tab_name == "주머니") {
+                        const zoo_url = new URL(item.image_url);
+                        const raw_zoo_option = decodeURIComponent(zoo_url.searchParams.get("item_color"));
+                        const zoo_color = raw_zoo_option ? JSON.parse(raw_zoo_option) : {color_01:'#000000'};
+                        
+                        item.item_option.push({
+                            option_desc: null,
+                            option_sub_type: "",
+                            option_type: "아이템 색상",
+                            option_value: hexToRgb(zoo_color.color_01),
+                            option_value2: null
+                        })
+                    }
                     const itemDiv = document.createElement("div");
                     itemDiv.classList.add("flex", "items-center", "p-4", "border-b");
 

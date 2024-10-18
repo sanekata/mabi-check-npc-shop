@@ -220,6 +220,11 @@
             return true;
         }
 
+        function hexToRgb(hex) {
+            var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? `${parseInt(result[1], 16)},${parseInt(result[2], 16)},${parseInt(result[3], 16)}` : '';
+        }
+
         // API 요청 보내기
         async function searchShop() {
             let itemDb = []; // 각 채널의 결과를 저장할 객체
@@ -289,11 +294,18 @@
                                 }
                             }
                         }
-                        if (mode === "bag") {
+                        if (mode === "bag" && tab.tab_name == "주머니") {
                             const zoo_url = new URL(item.image_url);
                             const item_name = item.item_display_name;
                             const raw_zoo_option = decodeURIComponent(zoo_url.searchParams.get("item_color"));
-                            const zoo_color = raw_zoo_option ? JSON.parse(raw_zoo_option) : null;
+                            const zoo_color = raw_zoo_option ? JSON.parse(raw_zoo_option) : {color_01:'#000000'};
+                            item.item_option.push({
+                                option_desc: null,
+                                option_sub_type: "",
+                                option_type: "아이템 색상",
+                                option_value: hexToRgb(zoo_color.color_01),
+                                option_value2: null
+                            })
                             
                             if (bag !== "all") {
                                 if (bag === item_name) {
