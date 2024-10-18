@@ -34,8 +34,65 @@
             <button class="channelBtn text-blue-500 px-4 py-2 rounded border border-blue-500" data-code="울프">울프</button>
         </div>
         <div class="flex items-center mb-4">
+            <label class="mr-2">검색 모드 선택</label>
+            <select class="border rounded px-2 py-1" name="mode">
+                <option value="color">아이템 색상</option>
+                <option value="bag">주머니 색상</option>
+            </select>
+        </div>
+        <div class="flex opt bag items-center mb-4">
+            <label class="mr-2">지역 선택</label>
+            <select class="border rounded px-2 py-1" name="mapName">
+                <option value="상인 네루">티르 코네일</option>
+                <option value="상인 누누">던바튼</option>
+                <option value="상인 라누">반호르</option>
+                <option value="상인 메루">이멘 마하</option>
+                <option value="상인 베루">탈틴</option>
+                <option value="상인 에루">타라</option>
+                <option value="상인 아루">카브 항구</option>
+                <option value="상인 세누">벨바스트(스카하 정찰 캠프)</option>
+                <option value="테일로">켈라 베이스 캠프</option>
+                <option value="리나">코르</option>
+                <option value="켄">필리아</option>
+                <option value="카디">발레스</option>
+                <option value="얼리">오아시스</option>
+                <option value="귀넥">카루 숲</option>
+                <option value="데위">페라</option>
+                <option value="모락">자르딘</option>
+            </select>            
+        </div>
+        <div class="flex opt bag items-center mb-4">
+            <label class="mr-2">주머니 선택</label>
+            <select class="border rounded px-2 py-1" name="bagName">
+                <option value="튼튼한 달걀 주머니">튼튼한 달걀 주머니</option>
+                <option value="튼튼한 감자 주머니">튼튼한 감자 주머니</option>
+                <option value="튼튼한 옥수수 주머니">튼튼한 옥수수 주머니</option>
+                <option value="튼튼한 밀 주머니">튼튼한 밀 주머니</option>
+                <option value="튼튼한 보리 주머니">튼튼한 보리 주머니</option>
+                <option value="튼튼한 양털 주머니">튼튼한 양털 주머니</option>
+                <option value="튼튼한 거미줄 주머니">튼튼한 거미줄 주머니</option>
+                <option value="튼튼한 가는 실뭉치 주머니">튼튼한 가는 실뭉치 주머니</option>
+                <option value="튼튼한 굵은 실뭉치 주머니">튼튼한 굵은 실뭉치 주머니</option>
+                <option value="튼튼한 저가형 가죽 주머니">튼튼한 저가형 가죽 주머니</option>
+                <option value="튼튼한 일반 가죽 주머니">튼튼한 일반 가죽 주머니</option>
+                <option value="튼튼한 고급 가죽 주머니">튼튼한 고급 가죽 주머니</option>
+                <option value="튼튼한 최고급 가죽 주머니">튼튼한 최고급 가죽 주머니</option>
+                <option value="튼튼한 저가형 옷감 주머니">튼튼한 저가형 옷감 주머니</option>
+                <option value="튼튼한 일반 옷감 주머니">튼튼한 일반 옷감 주머니</option>
+                <option value="튼튼한 고급 옷감 주머니">튼튼한 고급 옷감 주머니</option>
+                <option value="튼튼한 최고급 옷감 주머니">튼튼한 최고급 옷감 주머니</option>
+                <option value="튼튼한 저가형 실크 주머니">튼튼한 저가형 실크 주머니</option>
+                <option value="튼튼한 일반 실크 주머니">튼튼한 일반 실크 주머니</option>
+                <option value="튼튼한 고급 실크 주머니">튼튼한 고급 실크 주머니</option>
+                <option value="튼튼한 최고급 실크 주머니">튼튼한 최고급 실크 주머니</option>
+                <option value="튼튼한 꽃바구니">튼튼한 꽃바구니</option>
+            </select>
+        </div>
+        
+        <div class="flex opt color items-center mb-4">
             <label class="mr-2">NPC 선택</label>
             <select class="border rounded px-2 py-1" name="npcName">
+                <option value="all" selected>(모두 검색)</option>
                 <option value="델">델</option>
                 <option value="델렌">델렌</option>
                 <option value="상인 라누">상인 라누</option>
@@ -59,13 +116,7 @@
                 <option value="피오나트">피오나트</option>
             </select>
         </div>
-        <div class="flex items-center mb-4">
-            <label class="mr-2">모드 선택</label>
-            <select class="border rounded px-2 py-1" name="mode">
-                <option value="color">색상</option>
-            </select>
-        </div>
-        <div class="flex items-center mb-4">
+        <div class="flex opt color items-center mb-4">
             <label class="mr-2">파트 선택</label>
             <select class="border rounded px-2 py-1" name="part">
                 <option value="a">파트 A</option>
@@ -94,84 +145,7 @@
         let part = "a";
         let npcName = "델";
         let search = "0,0,0";
-
-        const npcInfoList = [{
-                location: "티르 코네일",
-                name: "상인 네루"
-            },
-            {
-                location: "던바튼",
-                name: "상인 누누"
-            },
-            {
-                location: "반호르",
-                name: "상인 라누"
-            },
-            {
-                location: "이멘 마하",
-                name: "상인 메루"
-            },
-            {
-                location: "탈틴",
-                name: "상인 베루"
-            },
-            {
-                location: "타라",
-                name: "상인 에루"
-            },
-            {
-                location: "카브 항구",
-                name: "상인 아루"
-            },
-            {
-                location: "벨바스트(스카하 정찰 캠프)",
-                name: "상인 세누"
-            },
-            {
-                location: "켈라 베이스 캠프",
-                name: "테일로"
-            },
-            {
-                location: "코르",
-                name: "리나"
-            },
-            {
-                location: "필리아",
-                name: "켄"
-            },
-            {
-                location: "발레스",
-                name: "카디"
-            },
-            {
-                location: "오아시스",
-                name: "얼리"
-            },
-            {
-                location: "카루 숲",
-                name: "귀넥"
-            },
-            {
-                location: "페라",
-                name: "데위"
-            },
-            {
-                location: "자르딘",
-                name: "모락"
-            }
-        ];
-
-        // name 기준으로 location을 찾는 함수
-        function findLocationByName(name) {
-            const npc = npcInfoList.find(npc => npc.name === name);
-            return npc ? npc.location : false;
-        }
-
-        // location 기준으로 name을 찾는 함수
-        function findNameByLocation(location) {
-            const npc = npcInfoList.find(npc => npc.location === location);
-            return npc ? npc.name : false;
-        }
+        let bag = "";
 
         // 서버 선택
         document.querySelectorAll('button.channelBtn').forEach(button => {
@@ -189,8 +163,24 @@
             console.log("NPC Name:", npcName);
         });
 
+        document.querySelector('select[name="mapName"]').addEventListener('change', (event) => {
+            npcName = event.target.value;
+            console.log("Map Name:", npcName);
+        });
+
+        document.querySelector('select[name="bagName"]').addEventListener('change', (event) => {
+            bag = event.target.value;
+            console.log("Bag Name:", bag);
+        });
+
         document.querySelector('select[name="mode"]').addEventListener('change', (event) => {
             mode = event.target.value;
+            document.querySelectorAll('div.opt').forEach(div => {
+                div.style.display = "none";
+            });
+            document.querySelectorAll(`div.${mode}`).forEach(div => {
+                div.style.display = "flex";
+            });
             console.log("Search Mode:", npcName);
         });
 
@@ -298,7 +288,6 @@
                             const raw_zoo_option = decodeURIComponent(zoo_url.searchParams.get("item_color"));
                             if (raw_zoo_option !== null) {
                                 const zoo_color = JSON.parse(raw_zoo_option);
-                                console.log(hexToRgb(zoo_color.color_01));
                                 if (compareColors(hexToRgb(zoo_color.color_01), search, 10)) {
                                     matchList.push({
                                         channel: channel++,
