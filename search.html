@@ -32,11 +32,14 @@
 </head>
 <body class="bg-gray-100 p-6 h-dvh">
     <div class="max-w-4xl mx-auto bg-white shadow-md rounded-lg p-4">
-        <div class="flex space-x-4 mb-4">
-            <button class="channelBtn selected text-blue-500 px-4 py-2 rounded border border-blue-500" data-code="류트">류트</button>
-            <button class="channelBtn text-blue-500 px-4 py-2 rounded border border-blue-500" data-code="만돌린">만돌린</button>
-            <button class="channelBtn text-blue-500 px-4 py-2 rounded border border-blue-500" data-code="하프">하프</button>
-            <button class="channelBtn text-blue-500 px-4 py-2 rounded border border-blue-500" data-code="울프">울프</button>
+        <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center">
+                <button class="channelBtn selected text-blue-500 px-4 py-2 rounded border border-blue-500" data-code="류트">류트</button>
+                <button class="channelBtn text-blue-500 px-4 py-2 rounded border border-blue-500" data-code="만돌린">만돌린</button>
+                <button class="channelBtn text-blue-500 px-4 py-2 rounded border border-blue-500" data-code="하프">하프</button>
+                <button class="channelBtn text-blue-500 px-4 py-2 rounded border border-blue-500" data-code="울프">울프</button>
+            </div>
+            <button class="bg-white text-blue-500 px-2 py-1 rounded ml-2" id="erin_time">초기화</button>
         </div>
         <div class="flex items-center mb-4">
             <label class="mr-2">검색 모드 선택</label>
@@ -161,6 +164,24 @@
         let searchResult = [];
         let isError = false;
         let errorCode = '';
+
+        function erinn_time() {
+            var curr_date = new Date();
+            var seconds_since_midnight = (curr_date.getHours() * 3600) + (curr_date.getMinutes() * 60) + curr_date.getSeconds();
+            var erinn_seconds = seconds_since_midnight % 2160;
+            var erinn_hour = Math.floor(erinn_seconds / 90);
+            var erinn_min = Math.floor((erinn_seconds % 90) / 1.5);
+
+            erinn_hour = erinn_hour.toString().padStart(2, "0");
+            erinn_min = erinn_min.toString().padStart(2, "0");
+
+            document.querySelector('#erin_time').innerText(`${erinn_hour} : ${erinn_min}`);
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            erinn_time();
+            setInterval(erinn_time, 3000);
+        });
 
         const npcInfoList = [
             {
