@@ -277,6 +277,7 @@
 
                 for (const tab of shopTabs) {
                     for (const item of tab.item) {
+                        let find = false;
                         if (mode === "color") {
                             for (const option of item.item_option) {
                                 if (
@@ -284,25 +285,42 @@
                                     option.option_sub_type.toLowerCase().includes(part.toLowerCase()) &&
                                     compareColors(option.option_value, search, 10)
                                 ) {
-                                    matchList.push({
-                                        channel,
-                                        ...item,
-                                    });
+                                    find = true;
                                 }
                             }
                         }
                         if (mode === "bag") {
                             const zoo_url = new URL(item.image_url);
+                            const item_name = item.item_display_name;
                             const raw_zoo_option = decodeURIComponent(zoo_url.searchParams.get("item_color"));
-                            if (raw_zoo_option !== null) {
-                                const zoo_color = JSON.parse(raw_zoo_option);
-                                if (compareColors(hexToRgb(zoo_color.color_01), search, 10)) {
-                                    matchList.push({
-                                        channel: channel++,
-                                        ...item,
-                                    });
+                            const zoo_color = raw_zoo_option ? JSON.parse(raw_zoo_option) : null;
+                            
+                            if (bag !== "all") {
+                                if (bag === item_name) {
+                                    if (search) { 
+                                        if (zoo_color && compareColors(hexToRgb(zoo_color.color_01), search, 10)) {
+                                            find = true;
+                                        }
+                                    } else {
+                                        find = true;
+                                    }
+                                }
+                            } else {
+                                if (search) {
+                                    if (zoo_color && compareColors(hexToRgb(zoo_color.color_01), search, 10)) {
+                                        find = true;
+                                    }
+                                } else {
+                                    find = true;
                                 }
                             }
+                        }
+
+                        if(find) {
+                            matchList.push({
+                                channel,
+                                ...item,
+                            });
                         }
                     }
                 }
