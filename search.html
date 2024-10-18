@@ -453,6 +453,7 @@
             tabContents.innerHTML = ""; // 기존 탭 콘텐츠 초기화
 
             shops.forEach((tab, index) => {
+                if(tab.item.length < 1) return;
                 // 탭 리스트 생성
                 const tabId = `tab_${index}`;
                 const tabItem = document.createElement("li");
