@@ -144,6 +144,7 @@
         let mode = "color";
         let part = "a";
         let npcName = "델";
+        let mapName = "상인 네루";
         let search = "0,0,0";
         let bag = "";
 
@@ -171,8 +172,8 @@
         });
 
         document.querySelector('select[name="mapName"]').addEventListener('change', (event) => {
-            npcName = event.target.value;
-            console.log("Map Name:", npcName);
+            mapName = event.target.value;
+            console.log("Map Name:", mapName);
         });
 
         document.querySelector('select[name="bagName"]').addEventListener('change', (event) => {
@@ -222,7 +223,7 @@
         // API 요청 보내기
         async function searchShop() {
             let itemDb = []; // 각 채널의 결과를 저장할 객체
-            const apiUrl = `https://mabi-api.yumeka.xyz/npcshop/status?npc_name=${npcName}&server_name=${curServer}&channel=`;
+            const apiUrl = `https://mabi-api.yumeka.xyz/npcshop/status?npc_name=${mode == 'color' ? npcName : mapName}&server_name=${curServer}&channel=`;
 
             document.getElementById("btnSearch").innerText = "검색중";
             document.getElementById("btnSearch").disabled = true;
