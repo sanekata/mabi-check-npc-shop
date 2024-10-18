@@ -135,10 +135,16 @@
         </div>
         <div class="flex items-center justify-between mb-4">
             <div class="flex items-center">
-                <label class="mr-2">검색할 값</label>
+                <label class="mr-2" id="search">겉감 색상</label>
                 <input type="color" name="picker" class="border rounded w-6 mr-2" value="">
                 <input type="text" name="search" class="border rounded px-2 py-1 w-64" value="" placeholder="검색하지 않으려면 값을 비워두세요">
                 <button class="bg-white text-blue-500 px-2 py-1 rounded ml-2" id="btnReset">초기화</button>
+            </div>
+            <div class="flex items-center" id="search2">
+                <label class="mr-2">안감 색상</label>
+                <input type="color" name="picker2" class="border rounded w-6 mr-2" value="">
+                <input type="text" name="search2" class="border rounded px-2 py-1 w-64" value="" placeholder="검색하지 않으려면 값을 비워두세요">
+                <button class="bg-white text-blue-500 px-2 py-1 rounded ml-2" id="btnReset2">초기화</button>
             </div>
             <button class="bg-blue-500 text-white px-4 py-2 rounded" onclick="searchShop()" id="btnSearch">검색하기</button>
         </div>
@@ -160,6 +166,7 @@
         let npcName = "델";
         let mapName = "상인 네루";
         let search = "";
+        let search2 = "";
         let bag = "all";
         let searchResult = [];
         let isError = false;
@@ -305,8 +312,7 @@
             console.log("Search Part:", npcName);
         });
 
-        document.querySelector('input[name="picker"]').addEventListener('input', (event) => {
-            console.log(event.target.value);
+        document.querySelector('input[name="picker"]').addEventListener('change', (event) => {
             search = hexToRgb(event.target.value);
             document.querySelector('input[name="search"]').value = search;
             console.log("Search Value:", search);
@@ -319,14 +325,36 @@
             console.log("Search Value:", search);
         });
 
-        document.querySelector('input[name="search"]').addEventListener('input', (event) => {
+        document.querySelector('input[name="search"]').addEventListener('change', (event) => {
             search = event.target.value;
-            rgb = search.split(",");
+            let rgb = search.split(",");
             if(rgb.length == 3) {
                 console.log(rgb);
                 document.querySelector('input[name="picker"]').value = rgbToHex(rgb[0], rgb[1], rgb[2]);
             }
             console.log("Search Value:", search);
+        });
+
+        document.querySelector('input[name="picker2"]').addEventListener('change', (event) => {
+            search2 = hexToRgb(event.target.value);
+            document.querySelector('input[name="search2"]').value = search2;
+            console.log("Search2 Value:", search2);
+        });
+
+        document.querySelector('button#btnReset2').addEventListener('click', (event) => {
+            document.querySelector('input[name="search2"]').value = '';
+            document.querySelector('input[name="picker2"]').value = '#000000';
+            search2 = '';
+            console.log("Search2 Value:", search2);
+        });
+
+        document.querySelector('input[name="search2"]').addEventListener('change', (event) => {
+            search2 = event.target.value;
+            let rgb = search.split(",");
+            if(rgb.length == 3) {
+                document.querySelector('input[name="picker2"]').value = rgbToHex(rgb[0], rgb[1], rgb[2]);
+            }
+            console.log("Search2 Value:", search2);
         });
 
         // 색상 비교 함수: 각 숫자가 ±margin 범위 내에 있는지 확인
@@ -366,7 +394,7 @@
             searchResult = [];
 
             if(search_npc_name == 'all') {
-                if(bag == 'all' && !search) {
+                if(bag == 'all' && !search && !search2) {
                     alert('모든 NPC 대상으로 검색시 가방 이름이나 색상 코드 중 하나는 지정해야 합니다.');
                     return;
                 }
@@ -456,54 +484,58 @@
                 const shopTabs = itemDb[channel];
 
                 for (const tab of shopTabs) {
-                    for (const item of tab.item) {
-                        let find = false;
-                        if (mode === "color") {
+                    if (mode === "color") {
+                        for (const item of tab.item) {
                             for (const option of item.item_option) {
                                 if (
                                     option.option_type === "아이템 색상" &&
                                     option.option_sub_type.toLowerCase().includes(part.toLowerCase()) &&
                                     compareColors(option.option_value, search, 10)
                                 ) {
-                                    find = true;
+                                    matchList.push({
+                                        channel,
+                                        ...item,
+                                    });
                                 }
                             }
                         }
-                        if (mode === "bag" && tab.tab_name == "주머니") {
+                    } else if (mode === "bag" && tab.tab_name == "주머니") {
+                        let bagList = [];
+                        for (const item of tab.item) {
                             const zoo_url = new URL(item.image_url);
                             const item_name = item.item_display_name;
                             const raw_zoo_option = decodeURIComponent(zoo_url.searchParams.get("item_color"));
-                            const zoo_color = raw_zoo_option ? JSON.parse(raw_zoo_option) : {color_01:'#000000'};
+                            const zoo_color = raw_zoo_option ? JSON.parse(raw_zoo_option) : {color_01:'#000000', color_03:'#000000'};
                             item.item_option.push({
                                 option_desc: null,
-                                option_sub_type: "",
+                                option_sub_type: "겉감",
                                 option_type: "아이템 색상",
                                 option_value: hexToRgb(zoo_color.color_01),
                                 option_value2: null
                             })
-                            
-                            if (bag !== "all") {
-                                if (bag === item_name) {
-                                    if (search) { 
-                                        if (zoo_color && compareColors(hexToRgb(zoo_color.color_01), search, 10)) {
-                                            find = true;
-                                        }
-                                    } else {
-                                        find = true;
-                                    }
-                                }
-                            } else {
-                                if (search) {
-                                    if (zoo_color && compareColors(hexToRgb(zoo_color.color_01), search, 10)) {
-                                        find = true;
-                                    }
-                                } else {
-                                    find = true;
-                                }
-                            }
+                            item.item_option.push({
+                                option_desc: null,
+                                option_sub_type: "안감",
+                                option_type: "아이템 색상",
+                                option_value: hexToRgb(zoo_color.color_03),
+                                option_value2: null
+                            })
+                            item.zoo_color = zoo_color;
+
+                            if (bag === 'all' || bag === item_name) bagList.push(item);
                         }
 
-                        if(find) {
+                        let search1List = [];
+                        for (const item of bagList) {
+                            if (!search || compareColors(hexToRgb(item.zoo_color.color_01), search, 10)) search1List.push(item);
+                        }
+
+                        let search2List = [];
+                        for (const item of search1List) {
+                            if (!search2 || compareColors(hexToRgb(item.zoo_color.color_03), search2, 10)) search2List.push(item);
+                        }
+
+                        for (const item of search2List) {
                             matchList.push({
                                 channel,
                                 ...item,

@@ -213,13 +213,20 @@
                     if(tab.tab_name == "주머니") {
                         const zoo_url = new URL(item.image_url);
                         const raw_zoo_option = decodeURIComponent(zoo_url.searchParams.get("item_color"));
-                        const zoo_color = raw_zoo_option ? JSON.parse(raw_zoo_option) : {color_01:'#000000'};
+                        const zoo_color = raw_zoo_option ? JSON.parse(raw_zoo_option) : {color_01:'#000000',color_03:'#000000'};
                         
                         item.item_option.push({
                             option_desc: null,
-                            option_sub_type: "",
+                            option_sub_type: "겉감",
                             option_type: "아이템 색상",
                             option_value: hexToRgb(zoo_color.color_01),
+                            option_value2: null
+                        })
+                        item.item_option.push({
+                            option_desc: null,
+                            option_sub_type: "안감",
+                            option_type: "아이템 색상",
+                            option_value: hexToRgb(zoo_color.color_03),
                             option_value2: null
                         })
                     }
