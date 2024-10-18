@@ -272,16 +272,14 @@
 
             // 탭 생성 및 아이템 목록 표시
             const matchList = [];
-            if (mode === "color") {
-                // color mode일 경우 part와 search를 기준으로 필터링
-                let channel = 1;
-                console.log(itemDb);
-                console.log(JSON.stringify(itemDb));
-                for (const shopData of itemDb) {
-                    const shopTabs = shopData.shop;
+            
+            // color mode일 경우 part와 search를 기준으로 필터링
+            for (let channel = 1; channel <= maxChannel; channel++) {
+                const shopTabs = itemDb[channel];
 
-                    for (const tab of shopTabs) {
-                        for (const item of tab.item) {
+                for (const tab of shopTabs) {
+                    for (const item of tab.item) {
+                        if (mode === "color") {
                             for (const option of item.item_option) {
                                 if (
                                     option.option_type === "아이템 색상" &&
@@ -289,23 +287,13 @@
                                     compareColors(option.option_value, search, 10)
                                 ) {
                                     matchList.push({
-                                        channel: channel++,
+                                        channel,
                                         ...item,
                                     });
                                 }
                             }
                         }
-                    }
-                }
-            }
-            if (mode === "bag") {
-                // bag mode일 경우 search를 기준으로 필터링
-                let channel = 1;
-                for (const shopData of itemDb) {
-                    const shopTabs = shopData.shop;
-
-                    for (const tab of shopTabs) {
-                        for (const item of tab.item) {
+                        if (mode === "bag") {
                             const zoo_url = new URL(item.image_url);
                             const raw_zoo_option = decodeURIComponent(zoo_url.searchParams.get("item_color"));
                             if (raw_zoo_option !== null) {
