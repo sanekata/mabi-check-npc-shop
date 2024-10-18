@@ -300,7 +300,35 @@
             return result ? `${parseInt(result[1], 16)},${parseInt(result[2], 16)},${parseInt(result[3], 16)}` : '';
         }
 
-        function fetchAllChannel(search_npc_name, curServer) {
+        async function searchShop() {
+            let search_npc_name = (mode == 'color' ? npcName : mapName);
+            searchResult = [];
+
+            if(search_npc_name == 'all') {
+                if(bag == 'all' && !search) {
+                    alert('모든 NPC 대상으로 검색시 가방 이름이나 색상 코드 중 하나는 지정해야 합니다.');
+                    return;
+                }
+                const allMap = document.querySelectorAll('select[name="mapName"] option');
+                for (let option of allMap) {
+                    if (option.value !== 'all') {
+                        await searchShopSingle(option.value);
+                    }
+                }
+            } else {
+                await searchShopSingle(search_npc_name);
+            }
+
+            createTabs(searchResult);
+
+            document.getElementById("btnSearch").innerText = "검색하기";
+            document.getElementById("btnSearch").disabled = false;
+        }
+
+        // API 요청 보내기
+        async function searchShopSingle(search_npc_name) {
+            let itemDb = []; // 각 채널의 결과를 저장할 객체
+
             const fetchPromises = [];
             const apiUrl = `https://mabi-api.yumeka.xyz/npcshop/status?npc_name=${search_npc_name}&server_name=${curServer}&channel=`;
 
@@ -341,40 +369,6 @@
 
                 fetchPromises.push(fetchPromise); // 모든 요청을 배열에 저장
             }
-
-            return fetchPromises;
-        }
-
-        async function searchShop() {
-            let search_npc_name = (mode == 'color' ? npcName : mapName);
-            searchResult = [];
-
-            if(search_npc_name == 'all') {
-                if(bag == 'all' && !search) {
-                    alert('모든 NPC 대상으로 검색시 가방 이름이나 색상 코드 중 하나는 지정해야 합니다.');
-                    return;
-                }
-                const allMap = document.querySelectorAll('select[name="mapName"] option');
-                for (let option of allMap) {
-                    if (option.value !== 'all') {
-                        await searchShopSingle(option.value);
-                    }
-                }
-            } else {
-                await searchShopSingle(search_npc_name);
-            }
-
-            createTabs(searchResult);
-
-            document.getElementById("btnSearch").innerText = "검색하기";
-            document.getElementById("btnSearch").disabled = false;
-        }
-
-        // API 요청 보내기
-        async function searchShopSingle(search_npc_name) {
-            let itemDb = []; // 각 채널의 결과를 저장할 객체
-
-            const fetchPromises = fetchAllChannel(search_npc_name, curServer);
 
             // 모든 채널의 API 요청이 완료될 때까지 대기
             await Promise.all(fetchPromises);
@@ -445,7 +439,7 @@
             }
 
             searchResult.push({
-                tab_name: "검색 결과",
+                tab_name: findLocationByName(search_npc_name),
                 item: matchList
             });
         }
