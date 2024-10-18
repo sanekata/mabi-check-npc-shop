@@ -178,7 +178,8 @@
                 // 탭 콘텐츠 생성
                 const tabContent = document.createElement("div");
                 tabContent.id = tabId;
-                tabContent.classList.add("itemList", "overflow-y-auto", "h-64", "border-t", "border-b");
+                tabContent.classList.add("itemList", "overflow-y-auto", "border-t", "border-b");
+                tabContent.style.height = "30rem";
                 tab.item.forEach(item => {
                     if(tab.tab_name == "주머니") {
                         const zoo_url = new URL(item.image_url);

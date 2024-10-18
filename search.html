@@ -30,7 +30,7 @@
         }
     </style>
 </head>
-<body class="bg-gray-100 p-6">
+<body class="bg-gray-100 p-6 h-dvh">
     <div class="max-w-4xl mx-auto bg-white shadow-md rounded-lg p-4">
         <div class="flex space-x-4 mb-4">
             <button class="channelBtn selected text-blue-500 px-4 py-2 rounded border border-blue-500" data-code="류트">류트</button>
@@ -507,7 +507,8 @@
                 // 탭 콘텐츠 생성
                 const tabContent = document.createElement("div");
                 tabContent.id = tabId;
-                tabContent.classList.add("itemList", "overflow-y-auto", "h-64", "border-t", "border-b");
+                tabContent.classList.add("itemList", "overflow-y-auto", "border-t", "border-b");
+                tabContent.style.height = "30rem";
                 tab.item.forEach(item => {
                     const itemDiv = document.createElement("div");
                     itemDiv.classList.add("flex", "items-center", "p-4", "border-b");
