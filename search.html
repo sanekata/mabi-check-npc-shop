@@ -140,7 +140,9 @@
                 <input type="text" name="search" class="border rounded px-2 py-1 w-64" value="" placeholder="검색하지 않으려면 값을 비워두세요">
                 <button class="bg-white text-blue-500 px-2 py-1 rounded ml-2" id="btnReset">초기화</button>
             </div>
-            <div class="flex items-center" id="search2">
+        </div>
+        <div class="flex items-center justify-between mb-4" id="search2">
+            <div class="flex items-center">
                 <label class="mr-2">안감 색상</label>
                 <input type="color" name="picker2" class="border rounded w-6 mr-2" value="">
                 <input type="text" name="search2" class="border rounded px-2 py-1 w-64" value="" placeholder="검색하지 않으려면 값을 비워두세요">
@@ -304,6 +306,13 @@
             document.querySelectorAll(`div.${mode}`).forEach(div => {
                 div.style.display = "flex";
             });
+            if(mode == 'color') {
+                document.querySelector('#search').innerText = "찾을 색상";
+                document.querySelector('#search2').style.display = "none";
+            } else if(mode == 'bag') {
+                document.querySelector('#search').innerText = "겉감 색상";
+                document.querySelector('#search2').style.display = "flex";
+            }
             console.log("Search Mode:", npcName);
         });
 
