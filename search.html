@@ -95,6 +95,84 @@
         let npcName = "델";
         let search = "0,0,0";
 
+        const npcInfoList = [{
+                location: "티르 코네일",
+                name: "상인 네루"
+            },
+            {
+                location: "던바튼",
+                name: "상인 누누"
+            },
+            {
+                location: "반호르",
+                name: "상인 라누"
+            },
+            {
+                location: "이멘 마하",
+                name: "상인 메루"
+            },
+            {
+                location: "탈틴",
+                name: "상인 베루"
+            },
+            {
+                location: "타라",
+                name: "상인 에루"
+            },
+            {
+                location: "카브 항구",
+                name: "상인 아루"
+            },
+            {
+                location: "벨바스트(스카하 정찰 캠프)",
+                name: "상인 세누"
+            },
+            {
+                location: "켈라 베이스 캠프",
+                name: "테일로"
+            },
+            {
+                location: "코르",
+                name: "리나"
+            },
+            {
+                location: "필리아",
+                name: "켄"
+            },
+            {
+                location: "발레스",
+                name: "카디"
+            },
+            {
+                location: "오아시스",
+                name: "얼리"
+            },
+            {
+                location: "카루 숲",
+                name: "귀넥"
+            },
+            {
+                location: "페라",
+                name: "데위"
+            },
+            {
+                location: "자르딘",
+                name: "모락"
+            }
+        ];
+
+        // name 기준으로 location을 찾는 함수
+        function findLocationByName(name) {
+            const npc = npcInfoList.find(npc => npc.name === name);
+            return npc ? npc.location : false;
+        }
+
+        // location 기준으로 name을 찾는 함수
+        function findNameByLocation(location) {
+            const npc = npcInfoList.find(npc => npc.location === location);
+            return npc ? npc.name : false;
+        }
+
         // 서버 선택
         document.querySelectorAll('button.channelBtn').forEach(button => {
             button.addEventListener('click', () => {
@@ -127,25 +205,95 @@
         });
 
         // API 요청 보내기
-        function searchShop() {
-            const apiUrl = `https://mabi-api.yumeka.xyz/npcshop/search?npc_name=${npcName}&server_name=${curServer}&mode=${mode}&part=${part}&search=${search}`;
+        async function searchShop() {
+            let itemDb = []; // 각 채널의 결과를 저장할 객체
+            const apiUrl = `https://mabi-api.yumeka.xyz/npcshop/status?npc_name=${npcName}&server_name=${curServer}&channel=`;
 
             document.getElementById("btnSearch").innerText = "검색중";
             document.getElementById("btnSearch").disabled = true;
 
-            fetch(apiUrl)
-                .then(response => response.json())
-                .then(data => {
-                    console.log("API Response:", data);
-                    createTabs(data.shop);  // 탭 생성 및 아이템 목록 표시
-                })
-                .catch(error => {
-                    console.error("Error fetching the API:", error);
-                })
-                .finally(() => {
-                    document.getElementById("btnSearch").innerText = "검색하기";
-                    document.getElementById("btnSearch").disabled = false;
-                });
+            const fetchPromises = [];
+
+            // 각 채널에 대한 API 요청을 준비
+            for (let channel = 1; channel <= maxChannel; channel++) {
+                const channelUrl = `${apiUrl}${channel}`; // 각 채널에 맞는 URL 생성
+                const fetchPromise = fetch(channelUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(`API Response for channel ${channel}:`, data);
+                        itemDb[channel] = data.shop; // 결과를 itemDb[channel]에 저장
+                    })
+                    .catch(error => {
+                        console.error(`Error fetching the API for channel ${channel}:`, error);
+                        itemDb[channel] = null; // 오류가 발생하면 해당 채널에 null 저장
+                    });
+
+                fetchPromises.push(fetchPromise); // 모든 요청을 배열에 저장
+            }
+
+            // 모든 채널의 API 요청이 완료될 때까지 대기
+            await Promise.all(fetchPromises);
+
+            // 탭 생성 및 아이템 목록 표시
+            const matchList = [];
+            if (mode === "color") {
+                // color mode일 경우 part와 search를 기준으로 필터링
+                let channel = 1;
+                for (const shopData of itemDb) {
+                    const shopTabs = shopData.shop;
+
+                    for (const tab of shopTabs) {
+                        for (const item of tab.item) {
+                            for (const option of item.item_option) {
+                                if (
+                                    option.option_type === "아이템 색상" &&
+                                    option.option_sub_type.toLowerCase().includes(part.toLowerCase()) &&
+                                    compareColors(option.option_value, search)
+                                ) {
+                                    matchList.push({
+                                        channel: channel++,
+                                        ...item,
+                                    });
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if (mode === "bag") {
+                // bag mode일 경우 search를 기준으로 필터링
+                let channel = 1;
+                for (const shopData of itemDb) {
+                    const shopTabs = shopData.shop;
+
+                    for (const tab of shopTabs) {
+                        for (const item of tab.item) {
+                            const zoo_url = new URL(item.image_url);
+                            const raw_zoo_option = decodeURIComponent(zoo_url.searchParams.get("item_color"));
+                            if (raw_zoo_option !== null) {
+                                const zoo_color = JSON.parse(raw_zoo_option);
+                                console.log(hexToRgb(zoo_color.color_01));
+                                if (compareColors(hexToRgb(zoo_color.color_01), search)) {
+                                    matchList.push({
+                                        channel: channel++,
+                                        ...item,
+                                    });
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            const result = [{
+                tab_name: "검색 결과",
+                item: matchList
+            }];
+
+            createTabs(result);
+
+            document.getElementById("btnSearch").innerText = "검색하기";
+            document.getElementById("btnSearch").disabled = false;
         }
 
         // 탭 및 아이템 목록을 동적으로 생성하는 함수
@@ -153,8 +301,8 @@
             const tabList = document.getElementById("tabList");
             const tabContents = document.getElementById("tabContents");
 
-            tabList.innerHTML = "";  // 기존 탭 초기화
-            tabContents.innerHTML = "";  // 기존 탭 콘텐츠 초기화
+            tabList.innerHTML = ""; // 기존 탭 초기화
+            tabContents.innerHTML = ""; // 기존 탭 콘텐츠 초기화
 
             shops.forEach((tab, index) => {
                 // 탭 리스트 생성
@@ -179,7 +327,7 @@
 
                     const itemImageWrapper = document.createElement("div");
                     itemImageWrapper.classList.add("w-16", "h-16", "mr-4");
-                    
+
                     const itemImage = document.createElement("img");
                     itemImage.src = item.image_url;
                     itemImage.alt = item.item_display_name;
@@ -197,16 +345,16 @@
                         item.item_option.forEach(option => {
                             const optionText = document.createElement("div");
                             optionText.classList.add("text-sm", "text-gray-500");
-                            if(option.option_type == "아이템 색상") {
-                                const optionDisplay = option.option_sub_type
-                                    ? `${option.option_type} [${option.option_sub_type}]: <span style="color: rgb(${option.option_value})">■</span> ${option.option_value}`
-                                    : `${option.option_type}: <span style="color: rgb(${option.option_value})">■</span> ${option.option_value}`;
+                            if (option.option_type == "아이템 색상") {
+                                const optionDisplay = option.option_sub_type ?
+                                    `${option.option_type} [${option.option_sub_type}]: <span style="color: rgb(${option.option_value})">■</span> ${option.option_value}` :
+                                    `${option.option_type}: <span style="color: rgb(${option.option_value})">■</span> ${option.option_value}`;
                                 optionText.innerHTML = optionDisplay;
                                 itemDetails.appendChild(optionText);
                             } else {
-                                const optionDisplay = option.option_sub_type
-                                    ? `${option.option_type} [${option.option_sub_type}]: ${option.option_value}`
-                                    : `${option.option_type}: ${option.option_value}`;
+                                const optionDisplay = option.option_sub_type ?
+                                    `${option.option_type} [${option.option_sub_type}]: ${option.option_value}` :
+                                    `${option.option_type}: ${option.option_value}`;
                                 optionText.innerHTML = optionDisplay;
                                 itemDetails.appendChild(optionText);
                             }
