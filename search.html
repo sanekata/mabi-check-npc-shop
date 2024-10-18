@@ -39,7 +39,7 @@
                 <button class="channelBtn text-blue-500 px-4 py-2 rounded border border-blue-500" data-code="하프">하프</button>
                 <button class="channelBtn text-blue-500 px-4 py-2 rounded border border-blue-500" data-code="울프">울프</button>
             </div>
-            <button class="bg-white text-blue-500 px-2 py-1 rounded ml-2" id="erin_time">초기화</button>
+            <button class="bg-white text-blue-500 px-2 py-1 rounded ml-2" id="erin_time">00 : 00</button>
         </div>
         <div class="flex items-center mb-4">
             <label class="mr-2">검색 모드 선택</label>
@@ -175,7 +175,7 @@
             erinn_hour = erinn_hour.toString().padStart(2, "0");
             erinn_min = erinn_min.toString().padStart(2, "0");
 
-            document.querySelector('#erin_time').innerText(`${erinn_hour} : ${erinn_min}`);
+            document.querySelector('#erin_time').innerText = `${erinn_hour} : ${erinn_min}`;
         }
 
         document.addEventListener("DOMContentLoaded", function() {
