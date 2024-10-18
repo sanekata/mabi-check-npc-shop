@@ -212,6 +212,24 @@
             document.getElementById("btnSearch").innerText = "검색중";
             document.getElementById("btnSearch").disabled = true;
 
+            let maxChannel;
+            switch (curServer) {
+                case "류트":
+                    maxChannel = 44;
+                    break;
+                case "만돌린":
+                    maxChannel = 16;
+                    break;
+                case "하프":
+                    maxChannel = 25;
+                    break;
+                case "울프":
+                    maxChannel = 16;
+                    break;
+                default:
+                    maxChannel = 99;
+            }
+
             const fetchPromises = [];
 
             // 각 채널에 대한 API 요청을 준비
