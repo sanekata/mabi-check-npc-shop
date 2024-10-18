@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>마비노기 NPC 상점 현황(v0.1.0 알파)</title>
+    <title>마비노기 NPC 상점 현황(v0.3.0 알파)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" type="text/css" href="https://unpkg.com/tabbyjs@12.0.3/dist/css/tabby-ui.min.css">
     <script src="https://unpkg.com/tabbyjs@12/dist/js/tabby.min.js"></script>
@@ -154,6 +154,10 @@
             return result ? `${parseInt(result[1], 16)},${parseInt(result[2], 16)},${parseInt(result[3], 16)}` : '';
         }
 
+        function formatMoney(x) {
+            return Number(x).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
         // 탭 및 아이템 목록을 동적으로 생성하는 함수
         function createTabs(shops) {
             const tabList = document.getElementById("tabList");
@@ -209,7 +213,7 @@
                     itemDetails.classList.add("flex-1");
                     itemDetails.innerHTML = `
                         <div class="font-medium">${item.item_display_name}</div>
-                        <div class="text-gray-600">가격: ${item.price[0].price_value} ${item.price[0].price_type}</div>
+                        <div class="text-gray-600">가격: ${formatMoney(item.price[0].price_value)} ${item.price[0].price_type}</div>
                     `;
 
                     const itemOptions = document.createElement("div");
