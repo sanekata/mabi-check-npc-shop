@@ -135,6 +135,7 @@
                 <label class="mr-2">검색할 값</label>
                 <input type="color" name="picker" class="border rounded w-6 mr-2" value="">
                 <input type="text" name="search" class="border rounded px-2 py-1 w-64" value="" placeholder="검색하지 않으려면 값을 비워두세요">
+                <button class="bg-white text-blue-500 px-2 py-1 rounded ml-2" id="btnReset">초기화</button>
             </div>
             <button class="bg-blue-500 text-white px-4 py-2 rounded" onclick="searchShop()" id="btnSearch">검색하기</button>
         </div>
@@ -285,6 +286,13 @@
             console.log(event.target.value);
             search = hexToRgb(event.target.value);
             document.querySelector('input[name="search"]').value = search;
+            console.log("Search Value:", search);
+        });
+
+        document.querySelector('button#btnReset').addEventListener('input', (event) => {
+            document.querySelector('input[name="search"]').value = '';
+            document.querySelector('input[name="search"]').value = '#000000';
+            search = '';
             console.log("Search Value:", search);
         });
 
