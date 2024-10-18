@@ -204,6 +204,24 @@
             console.log("Search Value:", search);
         });
 
+        // 색상 비교 함수: 각 숫자가 ±margin 범위 내에 있는지 확인
+        function compareColors(optionValue, searchValue, margin) {
+            const optionColors = optionValue.split(',').map(Number);
+            const searchColors = searchValue.split(',').map(Number);
+            
+            if (optionColors.length !== 3 || searchColors.length !== 3) {
+                return false;
+            }
+            
+            for (let i = 0; i < 3; i++) {
+                if (Math.abs(optionColors[i] - searchColors[i]) > margin) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         // API 요청 보내기
         async function searchShop() {
             let itemDb = []; // 각 채널의 결과를 저장할 객체
@@ -266,7 +284,7 @@
                                 if (
                                     option.option_type === "아이템 색상" &&
                                     option.option_sub_type.toLowerCase().includes(part.toLowerCase()) &&
-                                    compareColors(option.option_value, search)
+                                    compareColors(option.option_value, search, 10)
                                 ) {
                                     matchList.push({
                                         channel: channel++,
@@ -291,7 +309,7 @@
                             if (raw_zoo_option !== null) {
                                 const zoo_color = JSON.parse(raw_zoo_option);
                                 console.log(hexToRgb(zoo_color.color_01));
-                                if (compareColors(hexToRgb(zoo_color.color_01), search)) {
+                                if (compareColors(hexToRgb(zoo_color.color_01), search, 10)) {
                                     matchList.push({
                                         channel: channel++,
                                         ...item,
