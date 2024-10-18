@@ -159,6 +159,8 @@
         let search = "";
         let bag = "all";
         let searchResult = [];
+        let isError = false;
+        let errorCode = '';
 
         const npcInfoList = [
             {
@@ -366,6 +368,7 @@
         // API 요청 보내기
         async function searchShopSingle(search_npc_name) {
             let itemDb = []; // 각 채널의 결과를 저장할 객체
+            isError = false;
 
             const fetchPromises = [];
             const apiUrl = `https://mabi-api.yumeka.xyz/npcshop/status?npc_name=${search_npc_name}&server_name=${curServer}&channel=`;
@@ -398,7 +401,12 @@
                     .then(response => response.json())
                     .then(data => {
                         console.log(`API Response for channel ${channel}:`, data);
-                        itemDb[channel] = data.shop; // 결과를 itemDb[channel]에 저장
+                        if(data.error) {
+                            isError = true;
+                            errorCode = data.error.name;
+                        } else {
+                            itemDb[channel] = data.shop; // 결과를 itemDb[channel]에 저장
+                        }
                     })
                     .catch(error => {
                         console.error(`Error fetching the API for channel ${channel}:`, error);
@@ -410,6 +418,14 @@
 
             // 모든 채널의 API 요청이 완료될 때까지 대기
             await Promise.all(fetchPromises);
+
+            if(isError) {
+                if(errorCode == 'OPENAPI00009') {
+                    alert('넥슨 API 데이터 없음. 잠시 기다려 주세요.');
+                    searchResult = [];
+                    return;
+                }
+            }
 
             // 탭 생성 및 아이템 목록 표시
             const matchList = [];
