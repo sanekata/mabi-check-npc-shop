@@ -176,6 +176,7 @@
         let searchResult = [];
         let isError = false;
         let errorCode = '';
+        let colorlist = []; //TODO Remove This
 
         function erinn_time() {
             var curr_date = new Date();
@@ -257,7 +258,7 @@
                 name: "데위"
             },
             {
-                location: "자르딘",
+                location: "칼리다 탐사 캠프",
                 name: "모락"
             }
         ];
@@ -406,6 +407,7 @@
         async function searchShop() {
             let search_npc_name = (mode == 'color' ? npcName : mapName);
             searchResult = [];
+            colorlist = [];
 
             if(mode == 'color') {
                 alert('넥슨에서 주머니 색 검색을 막았습니다. 수정이 가능한지 연구중입니다.');
@@ -523,7 +525,7 @@
                             const zoo_url = new URL(item.image_url);
                             const item_name = item.item_display_name;
                             const raw_zoo_option = decodeURIComponent(zoo_url.searchParams.get("q"));
-                            console.log(raw_zoo_option);
+                            colorlist.push(raw_zoo_option);
                             const zoo_color = {color_01:'#000000', color_03:'#000000'};
                             item.item_option.push({
                                 option_desc: null,
