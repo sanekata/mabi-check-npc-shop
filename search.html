@@ -407,6 +407,10 @@
             let search_npc_name = (mode == 'color' ? npcName : mapName);
             searchResult = [];
 
+            if(mode == 'color') {
+                alert('넥슨에서 주머니 색 검색을 막았습니다. 수정이 가능한지 연구중입니다.');
+            }
+
             if(search_npc_name == 'all') {
                 if(bag == 'all' && !search && !search2) {
                     alert('모든 NPC 대상으로 검색시 가방 이름이나 색상 코드 중 하나는 지정해야 합니다.');
@@ -518,7 +522,8 @@
                         for (const item of tab.item) {
                             const zoo_url = new URL(item.image_url);
                             const item_name = item.item_display_name;
-                            const raw_zoo_option = decodeURIComponent(zoo_url.searchParams.get("item_color"));
+                            const raw_zoo_option = decodeURIComponent(zoo_url.searchParams.get("q"));
+                            console.log(raw_zoo_option);
                             const zoo_color = raw_zoo_option ? JSON.parse(raw_zoo_option) : {color_01:'#000000', color_03:'#000000'};
                             item.item_option.push({
                                 option_desc: null,
