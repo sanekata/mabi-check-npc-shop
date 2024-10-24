@@ -524,7 +524,7 @@
                             const item_name = item.item_display_name;
                             const raw_zoo_option = decodeURIComponent(zoo_url.searchParams.get("q"));
                             console.log(raw_zoo_option);
-                            const zoo_color = raw_zoo_option ? JSON.parse(raw_zoo_option) : {color_01:'#000000', color_03:'#000000'};
+                            const zoo_color = {color_01:'#000000', color_03:'#000000'};
                             item.item_option.push({
                                 option_desc: null,
                                 option_sub_type: "겉감",
