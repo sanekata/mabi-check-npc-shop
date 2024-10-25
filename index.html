@@ -186,15 +186,78 @@
             return Number(x).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
 
+        function decodeMabiColor(input) {
+            const result = {};
+            const labels = ['A', 'B', 'C', 'D', 'E', 'F']; // 키 값
+            const chunkSize = 18; // 18글자 단위로 자르기
+            const groups = [];
+
+            // 1. 18글자 단위로 자르기
+            for (let i = 0; i < input.length; i += chunkSize) {
+                groups.push(input.slice(i, i + chunkSize));
+            }
+
+            // 2. 4글자/12글자/2글자 또는 4글자/12글자 형태로 나누기
+            groups.forEach((group, index) => {
+                const rawColorPart = group.slice(4, 16); // 그 다음 12글자
+
+                // 3. 12글자 부분을 4글자 단위로 나누기
+                const colorPart = [
+                    rawColorPart.slice(0, 4),
+                    rawColorPart.slice(4, 8),
+                    rawColorPart.slice(8, 12),
+                ];
+
+                // 4. JSON 데이터 형태로 저장
+                result[labels[index]] = [...colorPart];
+            });
+
+            return result;
+        }
+
+        function searchValues(jsonData, searchKeys) {
+            const result = {
+                A: [],
+                B: [],
+                C: []
+            };
+
+            // A, B, C 각각의 키들에 대해 검색
+            Object.keys(result).forEach(key => {
+                searchKeys[key].forEach((searchKey, index) => {
+                    const dict = jsonData[key][(index + 1).toString()]; // 1, 2, 3번 딕셔너리 가져옴
+                    const search = dict[searchKey];
+                    if(!search) result[key].push('?');
+                    else result[key].push(search); // dict에서 해당 키 값을 가져와 결과에 push
+                });
+            });
+
+            return result;
+        }
+
+        async function decodeRawQ(raw_q) {
+            try {
+                const response = await fetch("https://mabi-api.yumeka.xyz/colorcode/data.json?v=latest");
+                const jsonData = await response.json();
+                const decodedColors = decodeMabiColor(raw_q);
+                const zoo_color = searchValues(jsonData, decodedColors);
+                return zoo_color;
+            } catch (error) {
+                console.error("Error decoding raw_q:", error);
+                return { A: [0,0,0], B: [0,0,0] };
+            }
+        }
+
         // 탭 및 아이템 목록을 동적으로 생성하는 함수
-        function createTabs(shops) {
+        async function createTabs(shops) {
             const tabList = document.getElementById("tabList");
             const tabContents = document.getElementById("tabContents");
 
             tabList.innerHTML = "";  // 기존 탭 초기화
             tabContents.innerHTML = "";  // 기존 탭 콘텐츠 초기화
 
-            shops.forEach((tab, index) => {
+            for (let index = 0; index < shops.length; index++) {
+                const tab = shops[index];
                 // 탭 리스트 생성
                 const tabId = `tab_${index}`;
                 const tabItem = document.createElement("li");
@@ -212,23 +275,12 @@
                 tabContent.id = tabId;
                 tabContent.classList.add("itemList", "overflow-y-auto", "border-t", "border-b");
                 tabContent.style.height = "30rem";
-                tab.item.forEach(item => {
+                for (const item of tab.item) {
                     if(tab.tab_name == "주머니") {
                         const zoo_url = new URL(item.image_url);
                         const raw_q = zoo_url.searchParams.get("q");
+                        const zoo_color = await decodeRawQ(raw_q);
 
-                        // 1. API 요청 보내기
-                        const zoo_color = await fetch(`https://mabi-api.yumeka.xyz/colorcode/guess?q=${raw_q}`)
-                            .then(response => response.json())
-                            .then(data => {
-                                return { A: data.A, B: data.B };
-                            })
-                            .catch(error => {
-                                console.error('Error fetching color codes:', error);
-                                return { A: [0,0,0], B: [0,0,0] }; // 기본값 설정
-                            });
-
-                        // 각 아이템에 대한 색상 정보를 저장
                         item.item_option.push({
                             option_desc: null,
                             option_sub_type: "겉감",
@@ -287,10 +339,10 @@
                     itemDiv.appendChild(itemDetails);
 
                     tabContent.appendChild(itemDiv);
-                });
+                }
 
                 tabContents.appendChild(tabContent);
-            });
+            }
 
             // 탭 갱신
             const tabs = new Tabby('[data-tabs]');
