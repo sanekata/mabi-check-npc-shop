@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>상점 검색 :: 마비노기 NPC 상점 체크 툴(v0.7.0 베타)</title>
+    <title>상점 검색 :: 마비노기 NPC 상점 체크 툴(v0.8.0 베타)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" type="text/css" href="https://unpkg.com/tabbyjs@12.0.3/dist/css/tabby-ui.min.css">
     <script src="https://unpkg.com/tabbyjs@12/dist/js/tabby.min.js"></script>
@@ -456,7 +456,7 @@
                     rawColorPart.slice(8, 12),
                 ];
 
-                result[labels[index]] = colorPart.join(",");
+                result[labels[index]] = [...colorPart];
             });
 
             return result;
@@ -477,6 +477,8 @@
                     if(!search) result[key].push('?');
                     else result[key].push(search); // dict에서 해당 키 값을 가져와 결과에 push
                 });
+
+                result[key] = result[key].join(",");
             });
 
             return result;

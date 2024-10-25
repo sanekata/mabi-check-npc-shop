@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>상점 현황 :: 마비노기 NPC 상점 체크 툴(v0.7.0 베타)</title>
+    <title>상점 현황 :: 마비노기 NPC 상점 체크 툴(v0.8.0 베타)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" type="text/css" href="https://unpkg.com/tabbyjs@12.0.3/dist/css/tabby-ui.min.css">
     <script src="https://unpkg.com/tabbyjs@12/dist/js/tabby.min.js"></script>
@@ -178,6 +178,15 @@
                 });
         }
 
+        function componentToHex(c) {
+            var hex = c.toString(16);
+            return hex.length == 1 ? "0" + hex : hex;
+        }
+        
+        function rgbToHex(r, g, b) {
+            return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+        }
+
         function hexToRgb(hex) {
             var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
             return result ? `${parseInt(result[1], 16)},${parseInt(result[2], 16)},${parseInt(result[3], 16)}` : '';
@@ -203,14 +212,14 @@
                 const rawColorPart = group.slice(4, 16); // 그 다음 12글자
 
                 // 3. 12글자 부분을 4글자 단위로 나누기
-                const colorPart = [
+                const colorHash = [
                     rawColorPart.slice(0, 4),
                     rawColorPart.slice(4, 8),
                     rawColorPart.slice(8, 12),
                 ];
 
                 // 4. JSON 데이터 형태로 저장
-                result[labels[index]] = colorPart.join(",");
+                result[labels[index]] = [...colorPart];
             });
 
             return result;
@@ -231,6 +240,8 @@
                     if(!search) result[key].push('?');
                     else result[key].push(search); // dict에서 해당 키 값을 가져와 결과에 push
                 });
+
+                result[key] = result[key].join(",");
             });
 
             return result;
