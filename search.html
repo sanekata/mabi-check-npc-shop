@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>상점 검색 :: 마비노기 NPC 상점 체크 툴(v0.9.0 베타)</title>
+    <title>상점 검색 :: 마비노기 NPC 상점 체크 툴(v0.9.2 베타)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" type="text/css" href="https://unpkg.com/tabbyjs@12.0.3/dist/css/tabby-ui.min.css">
     <script src="https://unpkg.com/tabbyjs@12/dist/js/tabby.min.js"></script>
@@ -472,7 +472,7 @@
                     const lower = searchKey.slice(2, 4);
                     console.log(upper, lower);
                     const dict = jsonData[key][(index + 1).toString()]; // 1, 2, 3번 딕셔너리 가져옴
-                    const search = dec2hex(dict['upper'][upper]) + dec2hex(dict['lower'][lower]);
+                    const search = dec2hex(dict['upper'][upper.toUpperCase()]) + dec2hex(dict['lower'][lower.toUpperCase()]);
                     console.log(search);
                     result[key] = result[key] + search;
                 });
@@ -589,40 +589,117 @@
                             const item_name = item.item_display_name;
                             const raw_q = zoo_url.searchParams.get("q");
                             const zoo_color = await decodeRawQ(raw_q);
-                            item.item_option.push({
-                                option_desc: null,
-                                option_sub_type: "겉감",
-                                option_type: "아이템 색상",
-                                option_value: zoo_color.A,
-                                option_value2: null
-                            })
-                            item.item_option.push({
-                                option_desc: null,
-                                option_sub_type: "안감",
-                                option_type: "아이템 색상",
-                                option_value: zoo_color.B,
-                                option_value2: null
-                            })
-                            item.item_option.push({
-                                option_desc: null,
-                                option_sub_type: "글자",
-                                option_type: "아이템 색상",
-                                option_value: zoo_color.C,
-                                option_value2: null
-                            });
-                            item.zoo_color = zoo_color;
+                            item.zoo_color = {};
+
+                            if (item_name.match(/(가죽|옷감|실크)/)) {
+                                item.zoo_color.outer = zoo_color.A;
+                                item.item_option.push({
+                                    option_desc: null,
+                                    option_sub_type: "겉감",
+                                    option_type: "아이템 색상",
+                                    option_value: zoo_color.A,
+                                    option_value2: null
+                                })
+                                item.zoo_color.inner = zoo_color.B;
+                                item.item_option.push({
+                                    option_desc: null,
+                                    option_sub_type: "안감",
+                                    option_type: "아이템 색상",
+                                    option_value: zoo_color.B,
+                                    option_value2: null
+                                })
+                                item.item_option.push({
+                                    option_desc: null,
+                                    option_sub_type: "글자 색(빈)",
+                                    option_type: "아이템 색상",
+                                    option_value: zoo_color.B,
+                                    option_value2: null
+                                })
+                                item.item_option.push({
+                                    option_desc: null,
+                                    option_sub_type: "글자 색(찬)",
+                                    option_type: "아이템 색상",
+                                    option_value: zoo_color.C,
+                                    option_value2: null
+                                })
+                            } else if (item_name.match(/(거미줄|실뭉치)/)) {
+                                item.zoo_color.outer = zoo_color.A;
+                                item.item_option.push({
+                                    option_desc: null,
+                                    option_sub_type: "겉감",
+                                    option_type: "아이템 색상",
+                                    option_value: zoo_color.A,
+                                    option_value2: null
+                                })
+                                item.item_option.push({
+                                    option_desc: null,
+                                    option_sub_type: "문양",
+                                    option_type: "아이템 색상",
+                                    option_value: zoo_color.B,
+                                    option_value2: null
+                                })
+                                item.zoo_color.inner = zoo_color.C;
+                                item.item_option.push({
+                                    option_desc: null,
+                                    option_sub_type: "안감",
+                                    option_type: "아이템 색상",
+                                    option_value: zoo_color.C,
+                                    option_value2: null
+                                })
+                            } else if (item_name.match(/(꽃)/)) {
+                                item.zoo_color.outer = zoo_color.A;
+                                item.item_option.push({
+                                    option_desc: null,
+                                    option_sub_type: "바구니",
+                                    option_type: "아이템 색상",
+                                    option_value: zoo_color.A,
+                                    option_value2: null
+                                })
+                                item.item_option.push({
+                                    option_desc: null,
+                                    option_sub_type: "천",
+                                    option_type: "아이템 색상",
+                                    option_value: zoo_color.B,
+                                    option_value2: null
+                                })
+                                item.zoo_color.inner = zoo_color.C;
+                                item.item_option.push({
+                                    option_desc: null,
+                                    option_sub_type: "꽃",
+                                    option_type: "아이템 색상",
+                                    option_value: zoo_color.C,
+                                    option_value2: null
+                                })
+                            } else {
+                                item.zoo_color.outer = zoo_color.A;
+                                item.item_option.push({
+                                    option_desc: null,
+                                    option_sub_type: "겉감",
+                                    option_type: "아이템 색상",
+                                    option_value: zoo_color.A,
+                                    option_value2: null
+                                })
+                                item.zoo_color.inner = zoo_color.B;
+                                item.item_option.push({
+                                    option_desc: null,
+                                    option_sub_type: "안감",
+                                    option_type: "아이템 색상",
+                                    option_value: zoo_color.B,
+                                    option_value2: null
+                                })
+                            }
 
                             if (bag === 'all' || bag === item_name) bagList.push(item);
                         }
 
                         let search1List = [];
                         for (const item of bagList) {
-                            if (!search || compareColors(item.zoo_color.A, search, 10)) search1List.push(item);
+                            if (!search || compareColors(item.zoo_color.outer, search, 10)) search1List.push(item);
                         }
 
                         let search2List = [];
                         for (const item of search1List) {
-                            if (!search2 || compareColors(item.zoo_color.B, search2, 10)) search2List.push(item);
+                            if (!search2 || compareColors(item.zoo_color.inner, search2, 10)) search2List.push(item);
                         }
 
                         for (const item of search2List) {
