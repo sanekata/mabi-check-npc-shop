@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>상점 현황 :: 마비노기 NPC 상점 체크 툴(v0.6.5 베타)</title>
+    <title>상점 현황 :: 마비노기 NPC 상점 체크 툴(v0.7.0 베타)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" type="text/css" href="https://unpkg.com/tabbyjs@12.0.3/dist/css/tabby-ui.min.css">
     <script src="https://unpkg.com/tabbyjs@12/dist/js/tabby.min.js"></script>
@@ -210,7 +210,7 @@
                 ];
 
                 // 4. JSON 데이터 형태로 저장
-                result[labels[index]] = [...colorPart];
+                result[labels[index]] = colorPart.join(",");
             });
 
             return result;
@@ -247,7 +247,7 @@
                 return zoo_color;
             } catch (error) {
                 console.error("Error decoding raw_q:", error);
-                return { A: [0,0,0], B: [0,0,0] };
+                return { A: '0,0,0', B: '0,0,0' };
             }
         }
 
